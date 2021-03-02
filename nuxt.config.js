@@ -281,34 +281,5 @@ export default {
 
   ...routerBase,
 
-  generate: {
-    routes() {
-      const baseUrl = process.env.BASE_URL
-
-      const fs = require('fs')
-      const res = JSON.parse(fs.readFileSync('src/data/es.json'))
-      const pages = []
-      for (let i = 0; i < res.length; i++) {
-        const obj = res[i]
-        const id = obj._id
-        const source = obj._source
-
-        source.manifest = source.manifest[0]
-        source.member = source.member[0]
-        source.id = id
-
-        pages.push({
-          route: `/item/${id}`,
-          palyload: { source },
-        })
-
-        pages.push({
-          route: `/en/item/${id}`,
-          palyload: { source },
-        })
-      }
-
-      return pages
-    },
-  },
+  generate: {},
 }
