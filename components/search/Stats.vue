@@ -21,7 +21,7 @@ export default class searchfilter extends Vue {
   }
 
   get total(): number {
-    const agg: string = 'label'
+    const agg: string = 'source'
     let total: number = 0
     const buckets = this.result.aggregations[agg].buckets
     for (let i = 0; i < buckets.length; i++) {

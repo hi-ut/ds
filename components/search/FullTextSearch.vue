@@ -1,9 +1,11 @@
 <template>
   <div>
+    <!-- background-color="grey lighten-2" -->
     <v-text-field
+      dark
       v-model="keywordStr"
       single-line
-      background-color="grey lighten-2"
+      
       filled
       rounded
       dense

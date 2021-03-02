@@ -76,7 +76,7 @@
         </v-list>
       </v-navigation-drawer>
 
-      <v-app-bar>
+      <v-app-bar dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title>
           <nuxt-link
@@ -100,9 +100,13 @@
         <v-spacer></v-spacer>
 
         <v-menu offset-y>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn depressed btn v-on="on">
               <v-icon>mdi-translate</v-icon>
+              <span v-if="!mobileFlag" class="ml-2">
+                {{ $i18n.locale == 'ja' ? '日本語' : 'English' }}
+                <v-icon class="ml-2">mdi-menu-down</v-icon>
+              </span>
             </v-btn>
           </template>
 
@@ -294,3 +298,12 @@ export default class search extends Vue {
   }
 }
 </script>
+
+<style>
+tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+* {
+  text-transform: none !important;
+}
+</style>
