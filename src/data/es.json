@@ -1,0 +1,17 @@
+[
+    {
+        "_id": "nishikie-isin2014",
+        "_index": "main",
+        "_source": {
+            "_label": [
+                "蝋燭市"
+            ],
+            "_thumbnail": [
+                "https://www.hi.u-tokyo.ac.jp/personal/yokoyama/nishikie/ishin2l/ld000032.jpg"
+            ],
+            "_url": [
+                "https://hi-ut.github.io/ds/item/nishikie-isin2014"
+            ]
+        }
+    }
+]

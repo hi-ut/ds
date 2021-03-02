@@ -1,0 +1,305 @@
+<template>
+  <v-app>
+    <div>
+      <v-navigation-drawer v-model="drawer" app :temporary="true">
+        <v-list>
+          <v-list-item link :to="localePath({ name: 'index' })" exact>
+            <v-list-item-action>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Home</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link :to="localePath({ name: 'search' })">
+            <v-list-item-action>
+              <v-icon>mdi-magnify</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('search') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            link
+            :to="localePath({ name: 'entity-id', params: { id: 'agential' } })"
+          >
+            <v-list-item-action>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('事物') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link :to="localePath({ name: 'fav' })">
+            <v-list-item-action>
+              <v-icon>mdi-heart-outline</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('お気に入り') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link :href="baseUrl + '/snorql'" target="_blank">
+            <v-list-item-action>
+              <v-icon>mdi-magnify</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title
+                >SPARQL Endpoint
+                <v-icon>mdi-open-in-new</v-icon></v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            link
+            href="https://iiif.dl.itc.u-tokyo.ac.jp/repo/s/tanaka/"
+            target="_blank"
+          >
+            <v-list-item-action>
+              <v-icon>mdi-image</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title
+                >田中芳男・博物学コレクション
+                <v-icon>mdi-open-in-new</v-icon></v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-app-bar>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+        <v-toolbar-title>
+          <nuxt-link
+            :to="
+              localePath({
+                name: 'index',
+              })
+            "
+            style="color: inherit; text-decoration: inherit"
+          >
+            {{ title }}
+          </nuxt-link>
+        </v-toolbar-title>
+
+        <template v-if="$vuetify.breakpoint.name != 'xs'">
+          <v-spacer></v-spacer>
+
+          <FullTextSearch />
+        </template>
+
+        <v-spacer></v-spacer>
+
+        <v-menu offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn depressed btn v-on="on">
+              <v-icon>mdi-translate</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item :to="switchLocalePath('ja')">
+              <v-list-item-title>日本語</v-list-item-title>
+            </v-list-item>
+            <v-list-item :to="switchLocalePath('en')">
+              <v-list-item-title>English</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <template v-if="isSignedIn">
+          <v-menu left bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on">
+                <v-avatar size="36">
+                  <img :src="userPic" :alt="userName" />
+                </v-avatar>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item @click="dialog = !dialog">
+                <v-list-item-title>プロフィール編集</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="signOut">
+                <v-list-item-title>ログアウト</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
+        <template v-else>
+          <v-btn color="error" @click="dialog4login = !dialog4login"
+            >ログイン</v-btn
+          >
+        </template>
+      </v-app-bar>
+    </div>
+
+    <v-main>
+      <nuxt />
+    </v-main>
+
+    <v-footer :dark="true" class="mt-5">
+      <v-container>
+        <p class="text-center my-5">
+          <template v-if="$i18n.locale == 'ja' || true">
+            東京大学学術資産等アーカイブズ委員会事務局<br />
+            （東京大学附属図書館総務課／学術資産アーカイブ化推進室）</template
+          >
+          <template v-else
+            >Masakatsu NAGAI, Toshihito WAKI, Yona TAKAHASHI and Satoru NAKAMURA
+          </template>
+        </p>
+        <p class="text-center my-5">
+          <template v-if="$i18n.locale == 'ja' || true">
+            E-mail：digital-archive [at] lib.u-tokyo.ac.jp
+          </template>
+          <template v-else>
+            This work was supported by JSPS KAKENHI Grant Number
+            <a href="https://kaken.nii.ac.jp/en/grant/KAKENHI-PROJECT-18K00525/"
+              >18K00525</a
+            >.
+          </template>
+        </p>
+      </v-container>
+    </v-footer>
+
+    <v-dialog v-model="dialog4login" width="500">
+      <v-card>
+        <v-card-title class="primary white--text" primary-title
+          >ログイン</v-card-title
+        >
+
+        <v-card-text class="mt-5">
+          ログインにはGoogle<!--またはTwitter-->アカウントが必要です。
+          <div class="text-center mb-5">
+            <v-btn class="error mt-5" @click="signInWithGoogle">
+              <v-icon class="mr-2">mdi mdi-google</v-icon
+              >Googleアカウントでログイン
+            </v-btn>
+            <!--
+            <v-btn class="info mt-5" @click="signInWithTwitter">
+              <v-icon class="mr-2">mdi mdi-twitter</v-icon
+              >Twitterアカウントでログイン
+            </v-btn>
+            -->
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-btn
+      v-show="fab"
+      v-scroll="onScroll"
+      fab
+      dark
+      fixed
+      bottom
+      right
+      large
+      color="error"
+      @click="toTop"
+    >
+      <v-icon>mdi-arrow-up</v-icon>
+    </v-btn>
+  </v-app>
+</template>
+
+<script lang="ts">
+import { Vue, Component } from 'nuxt-property-decorator'
+import firebase from '../plugins/firebase'
+import FullTextSearch from '~/components/search/FullTextSearch.vue'
+
+@Component({
+  components: {
+    FullTextSearch,
+  },
+})
+export default class search extends Vue {
+  fab: boolean = false
+
+  drawer: boolean = false
+  baseUrl: string = process.env.BASE_URL || ''
+  title: string = process.env.siteName || ''
+
+  dialog4login: boolean = false
+
+  get userName(): any {
+    return this.$store.getters.getUserName
+  }
+
+  set userName(value: any) {
+    this.$store.commit('setUserName', value)
+  }
+
+  get userPic(): any {
+    return this.$store.getters.getUserPic
+  }
+
+  set userPic(value: any) {
+    this.$store.commit('setUserPic', value)
+  }
+
+  get userUid(): any {
+    return this.$store.getters.getUserUid
+  }
+
+  set userUid(value: any) {
+    this.$store.commit('setUserUid', value)
+  }
+
+  get isSignedIn(): boolean {
+    return this.$store.getters.getIsSignedIn
+  }
+
+  set isSignedIn(value: boolean) {
+    this.$store.commit('setSignedIn', value)
+  }
+
+  created() {
+    this.onAuthStateChanged()
+  }
+
+  onScroll(e: any): void {
+    if (typeof window === 'undefined') return
+    const top = window.pageYOffset || e.target.scrollTop || 0
+    this.fab = top > 20
+  }
+
+  toTop(): void {
+    // @ts-ignore
+    this.$vuetify.goTo(0)
+  }
+
+  signInWithGoogle() {
+    this.$store.dispatch('login')
+    /*
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .catch(error => alert(error.message))
+      .then(() => (this.dialog4login = !this.dialog4login));
+    */
+    this.dialog4login = !this.dialog4login
+  }
+
+  onAuthStateChanged() {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.userUid = user ? user.uid : null
+      this.userName = user ? user.displayName : null
+      this.userPic = user ? user.photoURL : null
+      this.isSignedIn = !!user
+    })
+  }
+
+  async signOut() {
+    await firebase.auth().signOut()
+  }
+}
+</script>
