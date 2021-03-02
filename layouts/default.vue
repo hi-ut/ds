@@ -103,7 +103,7 @@
           <template #activator="{ on }">
             <v-btn depressed btn v-on="on">
               <v-icon>mdi-translate</v-icon>
-              <span v-if="!mobileFlag" class="ml-2">
+              <span v-if="$vuetify.breakpoint.name != 'xs'" class="ml-2">
                 {{ $i18n.locale == 'ja' ? '日本語' : 'English' }}
                 <v-icon class="ml-2">mdi-menu-down</v-icon>
               </span>

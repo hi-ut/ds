@@ -52,7 +52,7 @@ export class SearchUtils {
     // const qs = Object.keys(config.termLabels)
 
     // 検索対象メタデータ
-    const fields = ['tags'] // JSON.parse(process.env.SEARCH_LABELS)
+    const fields = ['fulltext'] // JSON.parse(process.env.SEARCH_LABELS)
 
     const FC_SIZE = 50
 
@@ -94,8 +94,8 @@ export class SearchUtils {
 
       const option = config.facetOptions[field]
 
-      let orderKey = option.orderKey || "_count"
-      let orderValue = option.orderValue || "desc"
+      const orderKey = option.orderKey || '_count'
+      const orderValue = option.orderValue || 'desc'
 
       const order: any = {}
       order[orderKey] = orderValue
@@ -104,8 +104,8 @@ export class SearchUtils {
       aggs[field] = {
         terms: {
           field: field + '.keyword',
-          size: max ? (option.size || FC_SIZE) : -1,
-          order
+          size: max ? option.size || FC_SIZE : -1,
+          order,
         },
       }
     }
@@ -957,14 +957,14 @@ export class SearchUtils {
       }))
 
       const queryKey = Object.keys(obj.order)[0]
-      
-      let sortKey = "value"
-      if(queryKey == "_term"){
-        sortKey = "key"
+
+      let sortKey = 'value'
+      if (queryKey == '_term') {
+        sortKey = 'key'
       }
 
       let order = 1
-      if(obj.order[queryKey] == "asc"){
+      if (obj.order[queryKey] == 'asc') {
         order = -1
       }
 
@@ -974,8 +974,8 @@ export class SearchUtils {
         return 0
       })
 
-      //---------
-      
+      // ---------
+
       if (size === -1 || size > arr.length) {
         size = arr.length
       }

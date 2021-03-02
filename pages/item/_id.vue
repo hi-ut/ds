@@ -99,74 +99,35 @@
                 v-html="$utils.formatArrayValue(source.description, '<br />')"
               ></td>
             </tr>
-            <tr>
-              <td width="30%">{{ $t('タイプ') }}</td>
-              <td class="py-5">
-                <nuxt-link
-                  v-for="(tag, key) in source.type"
-                  :key="key"
-                  class="mr-2"
-                  :to="
-                    localePath({ name: 'search', query: { 'fc-type': tag } })
-                  "
-                  >{{ tag }}</nuxt-link
-                >
-              </td>
-            </tr>
 
-            <tr v-if="source.agential">
-              <td width="30%">{{ $t('agential') }}</td>
-              <td class="py-5">
-                <nuxt-link
-                  v-for="(tag, key) in source.agential"
-                  :key="key"
-                  class="mr-2"
-                  :to="
-                    localePath({
-                      name: 'search',
-                      query: { 'fc-agential': tag },
-                    })
-                  "
-                  >{{ tag }}</nuxt-link
-                >
-              </td>
-            </tr>
-
-            <tr>
-              <td width="30%">{{ $t('about') }}</td>
-              <td class="py-5">
-                <nuxt-link
-                  v-for="(tag, key) in source.about"
-                  :key="key"
-                  class="mr-2"
-                  :to="
-                    localePath({
-                      name: 'search',
-                      query: { 'fc-about': tag },
-                    })
-                  "
-                  >{{ tag }}</nuxt-link
-                >
-              </td>
-            </tr>
-
-            <tr>
-              <td width="30%">{{ $t('source') }}</td>
-              <td class="py-5">
-                <nuxt-link
-                  v-for="(tag, key) in source.source"
-                  :key="key"
-                  class="mr-2"
-                  :to="
-                    localePath({
-                      name: 'search',
-                      query: { 'fc-source': tag },
-                    })
-                  "
-                  >{{ tag }}</nuxt-link
-                >
-              </td>
-            </tr>
+            <template
+              v-for="(value, n) in [
+                'type',
+                'agential',
+                'spatial',
+                'temporal',
+                'about',
+                'source',
+              ]"
+            >
+              <tr v-if="source[value]" :key="n">
+                <td width="30%">{{ $t(value) }}</td>
+                <td class="py-5">
+                  <nuxt-link
+                    v-for="(tag, key) in source[value]"
+                    :key="key"
+                    class="mr-2"
+                    :to="
+                      localePath({
+                        name: 'search',
+                        query: getQuery(value, tag),
+                      })
+                    "
+                    >{{ tag }}</nuxt-link
+                  >
+                </td>
+              </tr>
+            </template>
           </tbody>
         </template>
       </v-simple-table>
@@ -313,6 +274,12 @@ export default {
           encodeURIComponent(memberId)
         return url
       }
+    },
+
+    getQuery(value, tag) {
+      const map = {}
+      map[`fc-${value}`] = tag
+      return map
     },
 
     getCurationUrl() {

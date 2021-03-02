@@ -12,36 +12,16 @@ env.facetOptions = {
     label: '人物',
     open: false,
   },
-  keyword: {
-    label: 'タグ',
-    open: false,
-  },
   about: {
     label: 'キーワード',
     open: false,
   },
-  place: {
+  spatial: {
     label: '場所',
     open: false,
   },
-  time: {
+  temporal: {
     label: '時間',
-    open: false,
-  },
-  org: {
-    label: '組織',
-    open: false,
-  },
-  event: {
-    label: '出来事',
-    open: false,
-  },
-  mtag: {
-    label: '機械タグ',
-    open: false,
-  },
-  label: {
-    label: '帖数',
     open: false,
   },
   source: {
