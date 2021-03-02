@@ -8,36 +8,44 @@ env.facetOptions = {
     label: 'タイプ',
     open: false,
   },
-  agentials: {
+  agential: {
     label: '人物',
     open: false,
   },
-  keywords: {
+  keyword: {
     label: 'タグ',
     open: false,
   },
-  places: {
+  about: {
+    label: 'キーワード',
+    open: false,
+  },
+  place: {
     label: '場所',
     open: false,
   },
-  times: {
+  time: {
     label: '時間',
     open: false,
   },
-  orgs: {
+  org: {
     label: '組織',
     open: false,
   },
-  events: {
+  event: {
     label: '出来事',
     open: false,
   },
-  mtags: {
+  mtag: {
     label: '機械タグ',
     open: false,
   },
   label: {
     label: '帖数',
+    open: false,
+  },
+  source: {
+    label: '収録DB',
     open: false,
   },
 }

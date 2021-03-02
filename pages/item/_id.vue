@@ -1,14 +1,12 @@
 <template>
   <div>
-    <v-container class="py-5">
-      <iframe
-        :src="getIframeUrl()"
-        width="100%"
-        height="400"
-        allowfullscreen
-        frameborder="0"
-      ></iframe>
-    </v-container>
+    <iframe
+      :src="getIframeUrl()"
+      width="100%"
+      height="400"
+      allowfullscreen
+      frameborder="0"
+    ></iframe>
     <!--
     <v-sheet class="py-2" color="grey lighten-3">
       <v-container>
@@ -16,7 +14,7 @@
       </v-container>
     </v-sheet>
     -->
-    <v-container>
+    <v-container class="mt-5">
       <p class="text-center">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -30,20 +28,6 @@
             /></v-btn>
           </template>
           <span>{{ 'IIIF Curation Viewer' }}</span>
-        </v-tooltip>
-
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              class="mx-1"
-              icon
-              target="_blank"
-              :href="getUtaUrl()"
-              v-on="on"
-              ><img :src="baseUrl + '/img/icons/ut.ico'" width="30px"
-            /></v-btn>
-          </template>
-          <span>{{ $t('uta') }}</span>
         </v-tooltip>
 
         <v-tooltip bottom>
@@ -75,6 +59,8 @@
           </template>
           <span>{{ 'JSON' }}</span>
         </v-tooltip>
+
+        <!--
 
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -132,6 +118,8 @@
           <v-icon class="mx-1">mdi-heart-outline</v-icon
           >{{ userUids.length > 0 ? userUids.length : '' }}
         </template>
+
+        -->
       </p>
     </v-container>
     <v-sheet
@@ -434,6 +422,10 @@ export default {
   },
 
   created() {
+    /*
+
+    <iframe src="https://universalviewer.io/examples/uv/uv.html#?manifest=https://rmda.kulib.kyoto-u.ac.jp/iiif/metadata_manifest/RB00020102/manifest.json&c=undefined&m=0&s=0&cv=0&config=examples-config.json&locales=en-GB:English (GB),cy-GB:Cymraeg,fr-FR:Français (FR),sv-SE:Svenska,xx-XX:English (GB) (xx-XX)&xywh=-2051,-1,20809,13229&r=0" width="560" height="420" allowfullscreen frameborder="0"></iframe>
+
     firebase
       .firestore()
       .collection('items')
@@ -452,39 +444,50 @@ export default {
           console.error('GET_REALTIME_LIST', error)
         }
       )
+      */
   },
 
   methods: {
     getIframeUrl() {
-      const memberId = this.source.member
       const manifest = this.source.manifest
-      const url =
-        this.baseUrl +
-        '/curation/?manifest=' +
-        manifest +
-        '&canvas=' +
-        encodeURIComponent(memberId)
-      return url
+      if (!this.source.member) {
+        const url =
+          'https://universalviewer.io/examples/uv/uv.html#?manifest=' + manifest
+        console.log({ url })
+        return url
+      } else {
+        const memberId = this.source.member
+
+        const url =
+          this.baseUrl +
+          '/curation/?manifest=' +
+          manifest +
+          '&canvas=' +
+          encodeURIComponent(memberId)
+        console.log({ url })
+        return url
+      }
     },
 
     getCurationUrl() {
-      if (!this.source.member) {
-        return null
-      }
-      const memberId = this.source.member
       const manifest = this.source.manifest
-      const memberIdSpl = memberId.split('#xywh=')
-      const canvasId = memberIdSpl[0]
-      const xywh = memberIdSpl[1]
-      const url =
-        'http://codh.rois.ac.jp/software/iiif-curation-viewer/demo/?manifest=' +
-        manifest +
-        '&canvas=' +
-        encodeURIComponent(canvasId) +
-        '&xywh=' +
-        xywh +
-        '&xywh_highlight=border'
-      return url
+      if (!this.source.member) {
+      } else {
+        const memberId = this.source.member
+
+        const memberIdSpl = memberId.split('#xywh=')
+        const canvasId = memberIdSpl[0]
+        const xywh = memberIdSpl[1]
+        const url =
+          'http://codh.rois.ac.jp/software/iiif-curation-viewer/demo/?manifest=' +
+          manifest +
+          '&canvas=' +
+          encodeURIComponent(canvasId) +
+          '&xywh=' +
+          xywh +
+          '&xywh_highlight=border'
+        return url
+      }
     },
     getUtaUrl() {
       if (!this.source.member) {
@@ -509,6 +512,7 @@ export default {
       return url
     },
 
+    /*
     async good() {
       const addFlag = !this.isOwn
 
@@ -596,6 +600,8 @@ export default {
 
       await batch.commit()
     },
+  
+  */
   },
 
   head() {
