@@ -218,7 +218,7 @@ export default {
   data() {
     return {
       baseUrl: process.env.BASE_URL,
-      prefix: 'https://hi-ut.github.io/knowledge',
+      prefix: 'https://w3id.org/hi',
       userUids: [],
     }
   },
