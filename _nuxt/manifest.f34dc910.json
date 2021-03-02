@@ -1,0 +1,12 @@
+{
+  "name": "データ駆動型検索プロトタイプ",
+  "short_name": "捃拾帖",
+  "description": "東京大学史料編纂所・データ駆動型検索システムのプロトタイプです。",
+  "icons": [],
+  "start_url": "/ds/?standalone=true",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "lang": "ja",
+  "orientation": "portrait"
+}
