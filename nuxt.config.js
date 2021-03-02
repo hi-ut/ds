@@ -4,6 +4,10 @@ const environment = process.env.NODE_ENV
 const env = require(`./env/${environment}.ts`)
 
 env.facetOptions = {
+  source: {
+    label: '収録DB',
+    open: true,
+  },
   type: {
     label: 'タイプ',
     open: false,
@@ -22,10 +26,6 @@ env.facetOptions = {
   },
   temporal: {
     label: '時間',
-    open: false,
-  },
-  source: {
-    label: '収録DB',
     open: false,
   },
 }
