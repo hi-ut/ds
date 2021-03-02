@@ -155,7 +155,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.tags.length > 0" class="row">
+        <dl v-if="source.tags && source.tags.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('text') }}</b>
           </dt>
@@ -166,7 +166,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.type.length > 0" class="row">
+        <dl v-if="source.type && source.type.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('タイプ') }}</b>
           </dt>
@@ -181,7 +181,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.agentials.length > 0" class="row">
+        <dl v-if="source.agentials && source.agentials.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('人物') }}</b>
           </dt>
@@ -198,7 +198,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.keywords.length > 0" class="row">
+        <dl v-if="source.keywords && source.keywords.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('タグ') }}</b>
           </dt>
@@ -215,7 +215,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.places.length > 0" class="row">
+        <dl v-if="source.places && source.places.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('場所') }}</b>
           </dt>
@@ -230,7 +230,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.times.length > 0" class="row">
+        <dl v-if="source.times && source.times.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('時間') }}</b>
           </dt>
@@ -245,7 +245,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.orgs.length > 0" class="row">
+        <dl v-if="source.orgs && source.orgs.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('組織') }}</b>
           </dt>
@@ -260,7 +260,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.events.length > 0" class="row">
+        <dl v-if="source.events && source.events.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('出来事') }}</b>
           </dt>
@@ -275,7 +275,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.mtags.length > 0" class="row">
+        <dl v-if="source.mtags && source.mtags.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('機械タグ') }}</b>
           </dt>
@@ -290,7 +290,7 @@
           </dd>
         </dl>
 
-        <dl v-if="source.label.length > 0" class="row">
+        <dl v-if="source.label && source.label.length > 0" class="row">
           <dt class="col-sm-3 text-muted">
             <b>{{ $t('帖数') }}</b>
           </dt>
@@ -370,7 +370,7 @@ export default {
 
       const url = 'https://gimli-eu-west-1.searchly.com/main/_doc/' + id
       const username = 'search'
-      const password = 'lqtia2ngm63yi5tam7ewxjvqhogjem82'
+      const password = '1ff162746e60feac7c91c12d37cf0ca6'
 
       const response = await axios.get(url, {
         auth: {
@@ -381,9 +381,19 @@ export default {
 
       const data = response.data
       const source = data._source
-      source.manifest = source.manifest[0]
-      source.member = source.member[0]
-      source._url = source._url[0]
+
+      if (source.manifest) {
+        source.manifest = source.manifest[0]
+      }
+
+      if (source.member) {
+        source.member = source.member[0]
+      }
+
+      if (source._url) {
+        source._url = source._url[0]
+      }
+
       source.id = response._id
       source.sourceData =
         'https://' + username + ':' + password + '@' + url.split('://')[1]
@@ -458,6 +468,9 @@ export default {
     },
 
     getCurationUrl() {
+      if (!this.source.member) {
+        return null
+      }
       const memberId = this.source.member
       const manifest = this.source.manifest
       const memberIdSpl = memberId.split('#xywh=')
@@ -474,6 +487,9 @@ export default {
       return url
     },
     getUtaUrl() {
+      if (!this.source.member) {
+        return null
+      }
       const memberId = this.source.member
       const memberIdSpl = memberId.split('#xywh=')
       const canvasId = memberIdSpl[0]

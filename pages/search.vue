@@ -125,7 +125,7 @@ export default class search extends Vue {
     const response = await axios.post(url, esQuery, {
       auth: {
         username: 'search',
-        password: 'lqtia2ngm63yi5tam7ewxjvqhogjem82',
+        password: '1ff162746e60feac7c91c12d37cf0ca6',
       },
     })
 

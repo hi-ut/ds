@@ -21,6 +21,7 @@
             </v-list-item-content>
           </v-list-item>
 
+          <!--
           <v-list-item
             link
             :to="localePath({ name: 'entity-id', params: { id: 'agential' } })"
@@ -41,10 +42,11 @@
               <v-list-item-title>{{ $t('お気に入り') }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          -->
 
           <v-list-item link :href="baseUrl + '/snorql'" target="_blank">
             <v-list-item-action>
-              <v-icon>mdi-magnify</v-icon>
+              <v-icon>mdi-database</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title
@@ -54,6 +56,7 @@
             </v-list-item-content>
           </v-list-item>
 
+          <!--
           <v-list-item
             link
             href="https://iiif.dl.itc.u-tokyo.ac.jp/repo/s/tanaka/"
@@ -69,6 +72,7 @@
               >
             </v-list-item-content>
           </v-list-item>
+          -->
         </v-list>
       </v-navigation-drawer>
 
@@ -112,30 +116,32 @@
           </v-list>
         </v-menu>
 
-        <template v-if="isSignedIn">
-          <v-menu left bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on">
-                <v-avatar size="36">
-                  <img :src="userPic" :alt="userName" />
-                </v-avatar>
-              </v-btn>
-            </template>
+        <template v-if="false">
+          <template v-if="isSignedIn">
+            <v-menu left bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on">
+                  <v-avatar size="36">
+                    <img :src="userPic" :alt="userName" />
+                  </v-avatar>
+                </v-btn>
+              </template>
 
-            <v-list>
-              <v-list-item @click="dialog = !dialog">
-                <v-list-item-title>プロフィール編集</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="signOut">
-                <v-list-item-title>ログアウト</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-        <template v-else>
-          <v-btn color="error" @click="dialog4login = !dialog4login"
-            >ログイン</v-btn
-          >
+              <v-list>
+                <v-list-item @click="dialog = !dialog">
+                  <v-list-item-title>プロフィール編集</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="signOut">
+                  <v-list-item-title>ログアウト</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
+          <template v-else>
+            <v-btn color="error" @click="dialog4login = !dialog4login"
+              >ログイン</v-btn
+            >
+          </template>
         </template>
       </v-app-bar>
     </div>
@@ -147,24 +153,9 @@
     <v-footer :dark="true" class="mt-5">
       <v-container>
         <p class="text-center my-5">
-          <template v-if="$i18n.locale == 'ja' || true">
-            東京大学学術資産等アーカイブズ委員会事務局<br />
-            （東京大学附属図書館総務課／学術資産アーカイブ化推進室）</template
-          >
-          <template v-else
-            >Masakatsu NAGAI, Toshihito WAKI, Yona TAKAHASHI and Satoru NAKAMURA
-          </template>
-        </p>
-        <p class="text-center my-5">
-          <template v-if="$i18n.locale == 'ja' || true">
-            E-mail：digital-archive [at] lib.u-tokyo.ac.jp
-          </template>
-          <template v-else>
-            This work was supported by JSPS KAKENHI Grant Number
-            <a href="https://kaken.nii.ac.jp/en/grant/KAKENHI-PROJECT-18K00525/"
-              >18K00525</a
-            >.
-          </template>
+          {{ $t('東京大学史料編纂所') }}・{{
+            $t('前近代日本史情報国際センター')
+          }}
         </p>
       </v-container>
     </v-footer>

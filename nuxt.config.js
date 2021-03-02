@@ -68,6 +68,7 @@ env.siteName = siteName
 
 const siteDesc =
   '東京大学史料編纂所・データ駆動型検索システムのプロトタイプです。'
+env.siteDesc = siteDesc
 const siteKeywords = 'IIIF'
 
 // images
