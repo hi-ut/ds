@@ -1,11 +1,10 @@
 <template>
-  <div v-if="moreLikeThisData.length > 0">
-    <!-- <v-divider class="my-10" /> -->
-    <h3 class="mb-4">
-      {{ $t('more_like_this') }}
-    </h3>
-    <HorizontalItems :key="itemId" :data="moreLikeThisData" />
-  </div>
+  <HorizontalItems
+    v-if="moreLikeThisData.length > 0"
+    :key="itemId"
+    :data="moreLikeThisData"
+    :height="150"
+  />
 </template>
 
 <script lang="ts">
@@ -31,6 +30,11 @@ export default class morelikethis extends Vue {
   })
   query!: string
 
+  @Prop({
+    required: true,
+  })
+  fields!: string[]
+
   mounted() {
     this.moreLikeThis()
   }
@@ -46,7 +50,7 @@ export default class morelikethis extends Vue {
     const esQuery = {
       query: {
         more_like_this: {
-          fields: ['tags'],
+          fields: this.fields,
           like: this.query,
           min_term_freq: 0,
           min_doc_freq: 0,
@@ -57,12 +61,12 @@ export default class morelikethis extends Vue {
       size: 21,
     }
 
-    const url = 'https://gimli-eu-west-1.searchly.com/main/_search'
+    const url = process.env.es + '/main/_search'
 
     const response = await axios.post(url, esQuery, {
       auth: {
         username: 'search',
-        password: 'lqtia2ngm63yi5tam7ewxjvqhogjem82',
+        password: process.env.password + '',
       },
     })
 
@@ -73,8 +77,24 @@ export default class morelikethis extends Vue {
       for (let i = 0; i < result.length; i++) {
         const obj = result[i]
         if (obj._id !== itemId) {
-          obj.access = this.$utils.formatArrayValue(obj._source.tags)
-          result2.push(obj)
+          // result2.push(obj)
+
+          const source = obj._source
+
+          const to = this.localePath({
+            name: 'item-id',
+            params: { id: obj._id },
+          })
+
+          result2.push({
+            _id: 'abc',
+            _source: {
+              _label: source._label,
+              _thumbnail: source._thumbnail,
+              _url: [process.env.baseUrl + to],
+            },
+            to,
+          })
         }
       }
     }

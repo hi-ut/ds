@@ -134,6 +134,29 @@
     </v-container>
 
     <v-container fluid>
+      <div v-if="entity.all.length > 0" class="mt-10">
+        <div class="text-center">
+          <h3 class="my-5">{{ 'タイトルが似ているアイテム' }}</h3>
+        </div>
+        <MoreLikeThis
+          :item-id="id"
+          :query="source._label"
+          :fields="['_label']"
+        />
+      </div>
+
+      <div v-if="entity.all.length > 0" class="mt-10">
+        <div class="text-center">
+          <h3 class="my-5">{{ '関連する' + $t('entity') }}</h3>
+        </div>
+        <HorizontalItems
+          :data="entity.all"
+          :title="$t('agential')"
+          height="150"
+        />
+      </div>
+
+      <!--
       <div v-if="entity.agential.length > 0" class="mt-10">
         <div class="text-center">
           <h3 class="my-5">{{ $t('人物') }}</h3>
@@ -145,6 +168,7 @@
         />
       </div>
 
+      
       <div v-if="entity.about.length > 0" class="mt-10">
         <div class="text-center">
           <h3 class="my-5">{{ $t('キーワード') }}</h3>
@@ -171,6 +195,16 @@
             <mapc :markers="markers" :zoom="2" :center="center" />
           </div>
         </v-container>
+      </div>
+      -->
+    </v-container>
+
+    <v-container v-if="center">
+      <div class="text-center">
+        <h3 class="my-5">{{ $t('spatial') }}</h3>
+      </div>
+      <div id="map-wrap" style="height: 40vh" class="my-2">
+        <mapc :markers="markers" :zoom="2" :center="center" />
       </div>
     </v-container>
 
@@ -212,11 +246,13 @@ import axios from 'axios'
 import HorizontalItems from '~/components/display/HorizontalItems.vue'
 import ResultOption from '~/components/display/ResultOption.vue'
 import Mapc from '~/components/common/Map.vue'
+import MoreLikeThis from '~/components/item/MoreLikeThis.vue'
 export default {
   components: {
     HorizontalItems,
     ResultOption,
     Mapc,
+    MoreLikeThis,
   },
   async asyncData({ payload, app }) {
     if (payload) {
@@ -224,9 +260,9 @@ export default {
     } else {
       const id = app.context.route.params.id
 
-      const url = 'https://gimli-eu-west-1.searchly.com/main/_doc/' + id
+      const url = process.env.es + '/main/_doc/' + id
       const username = 'search'
-      const password = '1ff162746e60feac7c91c12d37cf0ca6'
+      const password = process.env.password
 
       const response = await axios.get(url, {
         auth: {
@@ -269,6 +305,7 @@ export default {
         agential: [],
         spatial: [],
         about: [],
+        all: [],
       },
       settings: {
         agential: {
@@ -291,6 +328,13 @@ export default {
           label: 'キーワード',
           mdi: 'mdi-tag',
           slug: 'term/keyword',
+        },
+        temporal: {
+          type: 'type:Time',
+          query: 'fc-temporal',
+          label: '時間',
+          mdi: 'mdi-calendar',
+          slug: 'entity/time',
         },
       },
       markers: [],
@@ -335,6 +379,7 @@ export default {
     this.getEntity('agential')
     this.getEntity('spatial')
     this.getEntity('about')
+    this.getEntity('temporal')
     this.getMarker()
   },
 
@@ -354,7 +399,7 @@ export default {
       const ids = []
 
       for (let i = 0; i < values.length; i++) {
-        const image = [field === 'spatial' ? 'mdi-map' : 'mdi-account']
+        const image = setting.mdi
 
         const value = values[i]
 
@@ -367,7 +412,7 @@ export default {
           _id: 'abc',
           _source: {
             _label: [value],
-            _thumbnail: image,
+            _thumbnail: [image],
             _url: [this.baseUrl + to],
           },
           to,
@@ -434,6 +479,12 @@ export default {
       }
 
       this.entity[field] = moreLikeThisData0
+      const arr = this.entity.all
+      for (let i = 0; i < moreLikeThisData0.length; i++) {
+        arr.push(moreLikeThisData0[i])
+      }
+
+      this.entity.all = arr
     },
     async getMarker() {
       const source = this.source
