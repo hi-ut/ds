@@ -142,7 +142,7 @@ export default class about extends Vue {
           label: obj.label.value,
           id: Object.keys(nodes2).length,
           uri: s,
-          p: 'http://schema.org/agential',
+          p: 'http://schema.org/' + entity,
           color: 'lightgreen',
         }
 
