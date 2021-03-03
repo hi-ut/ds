@@ -12,8 +12,8 @@
 
     <v-container>
       <h1 class="my-5">{{ $t('map') }}</h1>
-      <div id="map-wrap" style="height: 80vh" class="my-2">
-        <mapc :markers="markers" :zoom="2" :center="[38, 0]" />
+      <div v-if="center" id="map-wrap" style="height: 80vh" class="my-2">
+        <mapc :markers="markers" :zoom="2" :center="center" />
       </div>
     </v-container>
   </div>
@@ -32,6 +32,7 @@ import Mapc from '~/components/common/Map.vue'
 export default class PageMap extends Vue {
   map: any = {}
   markers: any[] = []
+  center: any = null
 
   asyncData({ payload }: any) {
     if (payload) {
@@ -105,6 +106,9 @@ export default class PageMap extends Vue {
 
     const markers = []
 
+    let lats = 0
+    let longs = 0
+
     for (let i = 0; i < results.length; i++) {
       const obj: any = results[i]
 
@@ -126,8 +130,13 @@ export default class PageMap extends Vue {
         },
       }
 
+      lats += obj.lat.value
+      longs += obj.long.value
+
       markers.push(marker)
     }
+
+    this.center = [lats / results.length, longs / results.length]
 
     this.markers = markers
   }
