@@ -23,7 +23,7 @@
         <v-tooltip bottom>
           <template #activator="{ on }">
             <v-btn
-              class="mr-5"
+              class="mx-2"
               :href="baseUrl + '/snorql?describe=' + uri"
               icon
               v-on="on"
@@ -44,77 +44,22 @@
       </div>
     </v-container>
     <v-container class="my-5">
-      <div v-if="false">
-        <h2 class="mb-5">{{ $t(field) }}: {{ id }}</h2>
-
-        <template v-if="Object.keys(entity).length > 0">
-          <v-row class="mb-5">
-            <v-col v-if="entity.image" cols="12" sm="2">
-              <v-img height="150px" contain :src="entity.image" />
-            </v-col>
-            <v-col cols="12" sm="10">
-              <p v-if="entity.description">
-                {{ entity.description }}
-              </p>
-            </v-col>
-          </v-row>
-        </template>
-      </div>
-
-      <v-card v-if="false" flat class="my-5">
-        <small>
-          <h3 class="mt-5 text-center">
-            {{ $t('items') }}
-          </h3>
-        </small>
-      </v-card>
-
-      <h2 class="mt-10 text-center">
-        {{ $t('items') }}
-        <v-tooltip bottom>
-          <template #activator="{ on }">
-            <v-btn
-              :to="
-                localePath({
-                  name: 'search',
-                  query: getQuery(field, id),
-                })
-              "
-              icon
-              v-on="on"
-              ><v-icon>mdi-magnify</v-icon></v-btn
-            >
-          </template>
-          <span>{{ $t('search') }}</span>
-        </v-tooltip>
-      </h2>
-
-      <v-simple-table v-if="false" class="mt-10">
-        <template #default>
-          <tbody>
-            <tr v-for="(arr, key) in items" :key="key">
-              <td width="30%">{{ key }}（{{ arr.length }}）</td>
-              <td style="overflow-wrap: break-word" class="py-5">
-                <nuxt-link
-                  v-for="(obj, key2) in arr"
-                  :key="key2"
-                  :to="
-                    localePath({
-                      name: 'item-id',
-                      params: {
-                        id: obj.objectID,
-                      },
-                    })
-                  "
-                  class="mr-5"
-                >
-                  {{ obj.label }}
-                </nuxt-link>
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
+      <v-btn
+        block
+        color="primary"
+        rounded
+        dark
+        x-large
+        :to="
+          localePath({
+            name: 'search',
+            query: getQuery(field, id),
+          })
+        "
+      >
+        <v-icon class="mr-2">mdi-magnify</v-icon>
+        {{ $t('items') + 'を探す' }}
+      </v-btn>
 
       <HorizontalItems
         v-for="(field, key) in fields"
@@ -141,7 +86,7 @@ export default {
     if (payload) {
       return { item: payload }
     } else {
-      const id = app.context.params.id
+      // const id = app.context.params.id
       const field = app.context.params.entity
 
       return { field, items: [] }
@@ -217,23 +162,28 @@ export default {
     },
   },
 
-  async created() {
-    const map = {
-      spatial: 'place',
-      temporal: 'time',
-      agential: 'entity/chname',
-      about: 'term/keyword',
-    }
+  created() {
+    this.getTarget()
+  },
 
-    let id = this.id
-    if (id === '兜町') {
-      id = '日本橋兜町'
-    }
+  methods: {
+    async getTarget() {
+      const map = {
+        spatial: 'place',
+        temporal: 'time',
+        agential: 'entity/chname',
+        about: 'term/keyword',
+      }
 
-    const uri = this.github + '/api/' + map[this.field] + '/' + id
-    this.uri = uri
+      let id = this.id
+      if (id === '兜町') {
+        id = '日本橋兜町'
+      }
 
-    const query = `
+      const uri = this.github + '/api/' + map[this.field] + '/' + id
+      this.uri = uri
+
+      const query = `
       PREFIX schema: <http://schema.org/>
       PREFIX type: <https://jpsearch.go.jp/term/type/>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -253,16 +203,14 @@ export default {
       LIMIT 1
     `
 
-    let url = this.endpoint + '?query='
+      let url = this.endpoint + '?query='
 
-    url = url + encodeURIComponent(query) + '&output=json'
+      url = url + encodeURIComponent(query) + '&output=json'
 
-    const res = await axios.get(url)
-    const results = res.data.results.bindings
-    this.entities = results
-  },
-
-  methods: {
+      const res = await axios.get(url)
+      const results = res.data.results.bindings
+      this.entities = results
+    },
     getQuery(label, value) {
       const query = {
         // 'dev_MAIN[sortBy]': 'dev_MAIN', // _temporal_asc',

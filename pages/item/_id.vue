@@ -28,7 +28,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn
-              class="mx-1"
+              class="mx-2"
               icon
               target="_blank"
               :href="getCurationUrl()"
@@ -43,7 +43,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               icon
-              class="mx-1"
+              class="mx-2"
               target="_blank"
               :href="
                 baseUrl + '/snorql/?describe=' + prefix + '/api/data/' + id
@@ -59,7 +59,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               icon
-              class="mx-1"
+              class="mx-2"
               target="_blank"
               :href="source.sourceData"
               v-on="on"
