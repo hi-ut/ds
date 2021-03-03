@@ -83,18 +83,23 @@ export default class about extends Vue {
     members: [
       {
         id: 'agential',
-        label: this.$t('人物'),
+        label: this.$t('agential'),
         image: 'mdi-account',
       },
       {
         id: 'spatial',
-        label: this.$t('場所'),
+        label: this.$t('spatial'),
         image: 'mdi-map-marker',
       },
       {
         id: 'about',
-        label: this.$t('キーワード'),
+        label: this.$t('about'),
         image: 'mdi-tag',
+      },
+      {
+        id: 'temporal',
+        label: this.$t('temporal'),
+        image: 'mdi-calendar',
       },
     ],
   }

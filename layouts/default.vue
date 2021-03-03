@@ -175,9 +175,9 @@
     <v-footer :dark="true" class="mt-5">
       <v-container>
         <p class="text-center my-5">
-          {{ $t('東京大学史料編纂所') }}・{{
-            $t('前近代日本史情報国際センター')
-          }}
+          {{ $t('前近代日本史情報国際センター') }}
+          <br />
+          {{ $t('東京大学史料編纂所') }}
         </p>
       </v-container>
     </v-footer>
@@ -238,7 +238,7 @@ export default class search extends Vue {
 
   drawer: boolean = false
   baseUrl: string = process.env.BASE_URL || ''
-  title: string = process.env.siteName || ''
+  title: any = this.$t(process.env.siteName as any)
 
   dialog4login: boolean = false
 

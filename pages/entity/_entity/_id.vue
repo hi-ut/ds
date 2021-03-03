@@ -58,7 +58,7 @@
         "
       >
         <v-icon class="mr-2">mdi-magnify</v-icon>
-        {{ $t('items') + 'を探す' }}
+        {{ $t('search') }}
       </v-btn>
 
       <Network :u="uri" :entity="field" class="mt-10 mb-5" />
@@ -212,6 +212,9 @@ export default {
     getQuery(label, value) {
       const query = {
         // 'dev_MAIN[sortBy]': 'dev_MAIN', // _temporal_asc',
+      }
+      if (label === 'temporal') {
+        value = value.replace('年', '')
       }
       query['fc-' + label] = value
       return query

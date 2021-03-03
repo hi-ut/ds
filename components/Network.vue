@@ -3,7 +3,9 @@
     <h2 class="my-5 text-center">{{ $t('network') }}</h2>
 
     <p class="text-center">
-      ノードをダブルクリックすることで、当該事物のページに遷移します。
+      {{
+        $t('ノードをダブルクリックすることで、当該事物のページに遷移します。')
+      }}
     </p>
 
     <v-card no-body outlined flat>

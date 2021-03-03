@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       baseUrl: process.env.BASE_URL,
-      title: process.env.siteName,
+      title: this.$t(process.env.siteName),
       siteDesc: process.env.siteDesc,
     }
   },

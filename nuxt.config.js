@@ -5,27 +5,27 @@ const env = require(`./env/${environment}.ts`)
 
 env.facetOptions = {
   source: {
-    label: '収録DB',
+    label: 'source',
     open: true,
   },
   type: {
-    label: 'タイプ',
+    label: 'about',
     open: false,
   },
   agential: {
-    label: '人物',
+    label: 'agential',
     open: false,
   },
   about: {
-    label: 'キーワード',
+    label: 'about',
     open: false,
   },
   spatial: {
-    label: '場所',
+    label: 'spatial',
     open: false,
   },
   temporal: {
-    label: '時間',
+    label: 'temporal',
     open: false,
   },
 }

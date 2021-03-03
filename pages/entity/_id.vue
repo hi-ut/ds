@@ -88,17 +88,30 @@ export default class PageCategory extends Vue {
     agential: {
       type: 'type:Agent',
       query: 'fc-agentials',
-      label: '人物',
+      label: 'agential',
+      slug: 'entity/chname',
+      mdi: 'mdi-account',
     },
     spatial: {
       type: 'type:Place',
       query: 'fc-places',
-      label: '場所',
+      label: 'temporal',
+      mdi: 'mdi-map',
+      slug: 'entity/place',
     },
     about: {
       type: 'type:Keyword',
       query: 'fc-about',
-      label: 'キーワード',
+      label: 'about',
+      mdi: 'mdi-tag',
+      slug: 'term/keyword',
+    },
+    temporal: {
+      type: 'type:Time',
+      query: 'fc-temporal',
+      label: 'temporal',
+      mdi: 'mdi-calendar',
+      slug: 'entity/time',
     },
   }
 
@@ -255,12 +268,12 @@ export default class PageCategory extends Vue {
   }
 
   get title() {
-    return this.settings[this.$route.params.id].label
+    return this.$t(this.settings[this.$route.params.id].label)
   }
 
   head() {
     return {
-      title: this.$t('category') + ' : ' + this.$t(this.title),
+      title: this.$t('category') + ' : ' + this.title,
       meta: [
         {
           hid: 'description',

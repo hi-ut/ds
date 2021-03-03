@@ -81,7 +81,7 @@
         <template #default>
           <tbody>
             <tr>
-              <td width="30%">{{ $t('URL') }}</td>
+              <td width="30%">URL</td>
               <td style="overflow-wrap: break-word" class="py-5">
                 <a :href="url">{{ url }}</a>
               </td>
@@ -134,11 +134,15 @@
     </v-container>
 
     <v-container fluid>
-      <div v-if="entity.all.length > 0" class="mt-10">
+      <div
+        v-show="$refs.mlt && $refs.mlt.moreLikeThisData.length > 0"
+        class="mt-10"
+      >
         <div class="text-center">
-          <h3 class="my-5">{{ 'タイトルが似ているアイテム' }}</h3>
+          <h3 class="my-5">{{ $t('タイトルが似ているアイテム') }}</h3>
         </div>
         <MoreLikeThis
+          ref="mlt"
           :item-id="id"
           :query="source._label"
           :fields="['_label']"
@@ -147,7 +151,7 @@
 
       <div v-if="entity.all.length > 0" class="mt-10">
         <div class="text-center">
-          <h3 class="my-5">{{ '関連する' + $t('entity') }}</h3>
+          <h3 class="my-5">{{ $t('関連する事物') }}</h3>
         </div>
         <HorizontalItems
           :data="entity.all"
@@ -357,7 +361,7 @@ export default {
     breadcrumbs() {
       return [
         {
-          text: this.$t('HOME'),
+          text: 'HOME',
           disabled: false,
           to: this.localePath({ name: 'index' }),
           exact: true,
