@@ -1,5 +1,7 @@
 //snorql.js / snorql_ldb.js custom configuration
 //@version 2020-06-01
+
+//
 var Snorqldef = {
 	//overrides Snorql class variables
 	vars: {
@@ -236,5 +238,23 @@ Snorqldef.example = [
 		"label_en" : "1858年のアイテム",
 		"ns" : [ ],
 		"query" : "SELECT DISTINCT ?provider (count(?cho) as ?count) WHERE {\n	?cho schema:temporal jps-time:1858;\n         jps:sourceInfo/schema:provider ?provider . \n}\nGROUP BY ?provider ORDER BY desc(?count)"
+	},
+{
+		"label": "場所一覧",
+		"label_en" : "場所一覧",
+		"ns" : [ ],
+		"query" : "SELECT DISTINCT ?spatial WHERE {\n   ?cho jps:sourceInfo ?source; schema:spatial ?spatial . \n }"
+	},
+{
+		"label": "時間一覧",
+		"label_en" : "時間一覧",
+		"ns" : [ ],
+		"query" : "SELECT DISTINCT ?temporal WHERE {\n   ?cho jps:sourceInfo ?source; schema:temporal ?temporal . \n }"
+	},
+{
+		"label": "人物一覧",
+		"label_en" : "人物一覧",
+		"ns" : [ ],
+		"query" : "SELECT DISTINCT ?agential WHERE {\n   ?cho jps:sourceInfo ?source; hi:agential ?agential . \n }"
 	},
 ];
