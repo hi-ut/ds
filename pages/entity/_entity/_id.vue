@@ -61,6 +61,9 @@
         {{ $t('items') + 'を探す' }}
       </v-btn>
 
+      <Network :u="uri" :entity="field" class="mt-10 mb-5" />
+
+      <!--
       <HorizontalItems
         v-for="(field, key) in fields"
         :key="key"
@@ -70,6 +73,7 @@
         height="100"
         width="200"
       />
+      -->
     </v-container>
   </div>
 </template>
@@ -77,10 +81,12 @@
 <script>
 import axios from 'axios'
 import ResultOption from '~/components/display/ResultOption.vue'
+import Network from '~/components/Network.vue'
 
 export default {
   components: {
     ResultOption,
+    Network,
   },
   asyncData({ payload, app }) {
     if (payload) {
@@ -169,31 +175,23 @@ export default {
   methods: {
     async getTarget() {
       const map = {
-        spatial: 'place',
-        temporal: 'time',
+        spatial: 'entity/place',
+        temporal: 'entity/time',
         agential: 'entity/chname',
         about: 'term/keyword',
       }
 
-      let id = this.id
-      if (id === '兜町') {
-        id = '日本橋兜町'
-      }
+      const id = this.id
 
-      const uri = this.github + '/api/' + map[this.field] + '/' + id
+      let uri = this.github + '/api/' + map[this.field] + '/' + id
+      if (this.field === 'temporal') {
+        uri = 'https://jpsearch.go.jp/entity/time/' + id
+      }
       this.uri = uri
 
       const query = `
       PREFIX schema: <http://schema.org/>
-      PREFIX type: <https://jpsearch.go.jp/term/type/>
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX dct: <http://purl.org/dc/terms/>
-      PREFIX hpdb: <https://w3id.org/hpdb/api/>
-      PREFIX sh: <http://www.w3.org/ns/shacl#>
       SELECT DISTINCT * WHERE {
         ?s rdfs:label ?label .
         filter (?s = <${uri}>)

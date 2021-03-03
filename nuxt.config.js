@@ -30,6 +30,8 @@ env.facetOptions = {
   },
 }
 
+env.endpoint = 'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql'
+
 console.log({ env })
 
 // `DEPLOY_ENV` が `GH_PAGES` の場合のみ `router.base = '/<repository-name>/'` を追加する
@@ -153,6 +155,11 @@ export default {
         rel: 'apple-touch-icon',
         sizes: '180x180',
         href: iconImages + 'apple-touch-icon.png',
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
       },
     ],
   },
