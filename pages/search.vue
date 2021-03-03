@@ -120,8 +120,6 @@ export default class search extends Vue {
     // 検索
     const esQuery = this.$searchUtils.createQuery(routeQuery, store.state)
 
-    console.log({ esQuery })
-
     const url = 'https://gimli-eu-west-1.searchly.com/main/_search'
 
     const response = await axios.post(url, esQuery, {

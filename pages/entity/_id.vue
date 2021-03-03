@@ -90,7 +90,7 @@ export default class PageCategory extends Vue {
       query: 'fc-agentials',
       label: '人物',
     },
-    place: {
+    spatial: {
       type: 'type:Place',
       query: 'fc-places',
       label: '場所',
@@ -153,8 +153,6 @@ export default class PageCategory extends Vue {
         }
       }
     `
-
-    console.log(query)
 
     let url = this.endpoint + '?query='
 

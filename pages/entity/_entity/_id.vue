@@ -43,7 +43,7 @@
         />
       </div>
     </v-container>
-    <v-container v-if="false" class="my-5">
+    <v-container class="my-5">
       <div v-if="false">
         <h2 class="mb-5">{{ $t(field) }}: {{ id }}</h2>
 
@@ -61,7 +61,7 @@
         </template>
       </div>
 
-      <v-card flat class="my-5">
+      <v-card v-if="false" flat class="my-5">
         <small>
           <h3 class="mt-5 text-center">
             {{ $t('items') }}
@@ -89,7 +89,7 @@
         </v-tooltip>
       </h2>
 
-      <v-simple-table class="mt-10">
+      <v-simple-table v-if="false" class="mt-10">
         <template #default>
           <tbody>
             <tr v-for="(arr, key) in items" :key="key">
@@ -264,11 +264,10 @@ export default {
 
   methods: {
     getQuery(label, value) {
-      const field = `dev_MAIN[refinementList][${label}][0]`
       const query = {
         // 'dev_MAIN[sortBy]': 'dev_MAIN', // _temporal_asc',
       }
-      query[field] = value
+      query['fc-' + label] = value
       return query
     },
 

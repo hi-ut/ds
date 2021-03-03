@@ -86,13 +86,11 @@ export default class about extends Vue {
         label: this.$t('人物'),
         image: 'mdi-account',
       },
-      /*
       {
-        id: 'place',
+        id: 'spatial',
         label: this.$t('場所'),
         image: 'mdi-map-marker',
       },
-      */
       {
         id: 'about',
         label: this.$t('キーワード'),
