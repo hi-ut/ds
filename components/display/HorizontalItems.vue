@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'nuxt-property-decorator'
-import CardItem from '~/components/display/CardItem.vue'
+import CardItem from '~/components/display/HorizontalCardItem.vue'
 
 @Component({
   components: {

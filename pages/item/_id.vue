@@ -134,9 +134,44 @@
     </v-container>
 
     <v-container fluid>
-      <MoreLikeThis class="mb-5" :item-id="id" :query="source.tags" />
+      <div v-if="entity.agential.length > 0" class="mt-10">
+        <div class="text-center">
+          <h3 class="my-5">{{ $t('人物') }}</h3>
+        </div>
+        <HorizontalItems
+          :data="entity.agential"
+          :title="$t('agential')"
+          height="200"
+        />
+      </div>
 
-      <SimilarImages class="mb-5" :item-id="id" :query="source.images" />
+      <div v-if="entity.about.length > 0" class="mt-10">
+        <div class="text-center">
+          <h3 class="my-5">{{ $t('キーワード') }}</h3>
+        </div>
+        <HorizontalItems
+          :data="entity.about"
+          :title="$t('agential')"
+          height="200"
+        />
+      </div>
+
+      <div v-if="entity.spatial.length > 0" class="mt-10">
+        <div class="text-center">
+          <h3 class="my-5">{{ $t('spatial') }}</h3>
+        </div>
+        <HorizontalItems
+          :data="entity.spatial"
+          :title="$t('spatial')"
+          height="200"
+        />
+
+        <v-container v-if="center">
+          <div id="map-wrap" style="height: 40vh" class="my-2">
+            <mapc :markers="markers" :zoom="2" :center="center" />
+          </div>
+        </v-container>
+      </div>
     </v-container>
 
     <v-sheet class="text-center pa-10 mt-10">
@@ -174,7 +209,15 @@
 <script>
 import axios from 'axios'
 
+import HorizontalItems from '~/components/display/HorizontalItems.vue'
+import ResultOption from '~/components/display/ResultOption.vue'
+import Mapc from '~/components/common/Map.vue'
 export default {
+  components: {
+    HorizontalItems,
+    ResultOption,
+    Mapc,
+  },
   async asyncData({ payload, app }) {
     if (payload) {
       return payload
@@ -219,7 +262,39 @@ export default {
     return {
       baseUrl: process.env.BASE_URL,
       prefix: 'https://w3id.org/hi',
+      endpoint: 'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql',
+      github: 'https://w3id.org/hi',
       userUids: [],
+      entity: {
+        agential: [],
+        spatial: [],
+        about: [],
+      },
+      settings: {
+        agential: {
+          type: 'type:Agent',
+          query: 'fc-agentials',
+          label: '人物',
+          slug: 'entity/chname',
+          mdi: 'mdi-account',
+        },
+        spatial: {
+          type: 'type:Place',
+          query: 'fc-places',
+          label: '場所',
+          mdi: 'mdi-map',
+          slug: 'entity/place',
+        },
+        about: {
+          type: 'type:Keyword',
+          query: 'fc-about',
+          label: 'キーワード',
+          mdi: 'mdi-tag',
+          slug: 'term/keyword',
+        },
+      },
+      markers: [],
+      center: null,
     }
   },
 
@@ -256,7 +331,192 @@ export default {
     },
   },
 
+  created() {
+    this.getEntity('agential')
+    this.getEntity('spatial')
+    this.getEntity('about')
+    this.getMarker()
+  },
+
   methods: {
+    async getEntity(field = 'spatial') {
+      const source = this.source
+
+      const setting = this.settings[field]
+
+      if (!source[field]) {
+        return
+      }
+      const values = source[field]
+
+      const moreLikeThisData0 = []
+
+      const ids = []
+
+      for (let i = 0; i < values.length; i++) {
+        const image = [field === 'spatial' ? 'mdi-map' : 'mdi-account']
+
+        const value = values[i]
+
+        const to = this.localePath({
+          name: 'entity-entity-id',
+          params: { entity: field, id: value },
+        })
+
+        moreLikeThisData0.push({
+          _id: 'abc',
+          _source: {
+            _label: [value],
+            _thumbnail: image,
+            _url: [this.baseUrl + to],
+          },
+          to,
+        })
+
+        const uri = this.github + '/api/' + setting.slug + '/' + value
+        ids.push(`?s = <${uri}>`)
+      }
+
+      this.entity[field] = moreLikeThisData0
+
+      if (ids.length === 0) {
+        return
+      }
+
+      const filter = ids.join(' || ')
+
+      const query = `
+      PREFIX schema: <http://schema.org/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT DISTINCT * WHERE {
+        ?s rdfs:label ?label .
+        filter (${filter})
+        optional { ?s schema:description ?description }
+        optional { ?s schema:image ?image }
+      }
+      `
+      let url = this.endpoint + '?query='
+
+      url = url + encodeURIComponent(query) + '&output=json'
+
+      const res = await axios.get(url)
+      const results = res.data.results.bindings
+
+      const map = {}
+
+      for (let i = 0; i < results.length; i++) {
+        const hit = results[i]
+        map[hit.s.value] = hit
+      }
+
+      for (let i = 0; i < values.length; i++) {
+        const item = moreLikeThisData0[i]
+
+        if (!item) {
+          continue
+        }
+
+        const facet = values[i]
+        const uri = this.github + '/api/' + setting.slug + '/' + facet
+
+        if (!map[uri]) {
+          continue
+        }
+        const hit = map[uri]
+
+        const image = hit.image ? [hit.image.value] : [setting.mdi]
+
+        if (hit.description) {
+          item._source.description = [hit.description.value]
+        }
+
+        item._source._thumbnail = image
+      }
+
+      this.entity[field] = moreLikeThisData0
+    },
+    async getMarker() {
+      const source = this.source
+
+      const field = 'spatial'
+
+      const setting = this.settings[field]
+
+      if (!source[field]) {
+        return
+      }
+      const values = source[field]
+
+      const ids = []
+
+      for (let i = 0; i < values.length; i++) {
+        const value = values[i]
+
+        const uri = this.github + '/api/' + setting.slug + '/' + value
+        ids.push(`?spatial = <${uri}>`)
+      }
+
+      if (ids.length === 0) {
+        return
+      }
+
+      const filter = ids.join(' || ')
+
+      const query = `
+      PREFIX schema: <http://schema.org/>
+      PREFIX jps: <https://jpsearch.go.jp/term/property#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT DISTINCT ?spatial ?lat ?long ?label WHERE {
+        ?cho jps:sourceInfo ?source; schema:spatial ?spatial . 
+        filter (${filter})
+        ?spatial rdfs:label ?label; schema:geo ?geo .
+        ?geo schema:latitude ?lat; schema:longitude ?long .
+      }
+      `
+
+      let url = this.endpoint + '?query='
+
+      url = url + encodeURIComponent(query) + '&output=json'
+
+      const res = await axios.get(url)
+      const results = res.data.results.bindings
+
+      const markers = []
+
+      let lats = 0
+      let longs = 0
+
+      for (let i = 0; i < results.length; i++) {
+        const obj = results[i]
+
+        const label = obj.label.value
+
+        const param = {}
+        const fcField = 'fc-spatial'
+        param[fcField] = label
+
+        const marker = {
+          latlng: [obj.lat.value, obj.long.value],
+          content: label,
+          path: {
+            name: 'entity-entity-id',
+            params: {
+              entity: 'spatial',
+              id: label,
+            },
+          },
+        }
+
+        lats += obj.lat.value
+        longs += obj.long.value
+
+        markers.push(marker)
+      }
+
+      this.center = [lats / results.length, longs / results.length]
+
+      this.markers = markers
+    },
     getIframeUrl() {
       const manifest = this.source.manifest
       if (!this.source.member) {

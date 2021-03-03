@@ -1,7 +1,7 @@
 <template>
   <client-only>
     <!-- :min-zoom="2"  -->
-    <l-map :zoom="zoom" :center="center" style="z-index: 0;">
+    <l-map :zoom="zoom" :center="center" style="z-index: 0">
       <l-control-layers position="topright"></l-control-layers>
       <l-tile-layer
         v-for="tileProvider in tileProviders"
@@ -61,7 +61,7 @@ export default class Map extends Vue {
   zoom!: number
 
   @Prop({
-    default: [],
+    default: () => [38, 0], // Objectを生成する関数を指定する
   })
   center!: number[]
 
