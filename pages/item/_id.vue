@@ -9,13 +9,21 @@
         </v-breadcrumbs>
       </v-container>
     </v-sheet>
-    <iframe
-      :src="getIframeUrl()"
-      width="100%"
-      height="400"
-      allowfullscreen
-      frameborder="0"
-    ></iframe>
+    <template v-if="getIframeUrl()">
+      <iframe
+        :src="getIframeUrl()"
+        width="100%"
+        height="300"
+        allowfullscreen
+        frameborder="0"
+      ></iframe>
+    </template>
+    <template v-else>
+      <v-sheet color="grey lighten-2">
+        <v-img contain :src="source._thumbnail[0]" height="150" />
+      </v-sheet>
+    </template>
+
     <!--
     <v-sheet class="py-2" color="grey lighten-3">
       <v-container>
@@ -24,6 +32,10 @@
     </v-sheet>
     -->
     <v-container class="mt-5">
+      <h1 class="mb-5">
+        {{ $utils.formatArrayValue(title) }}
+      </h1>
+
       <p class="text-center">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -80,24 +92,29 @@
       <v-simple-table class="mt-10">
         <template #default>
           <tbody>
-            <tr>
+            <tr v-if="false">
               <td width="30%">URL</td>
               <td style="overflow-wrap: break-word" class="py-5">
                 <a :href="url">{{ url }}</a>
               </td>
             </tr>
-            <tr>
-              <td width="30%">{{ $t('label') }}</td>
-              <td class="py-5">
-                {{ $utils.formatArrayValue(title) }}
-              </td>
-            </tr>
+
             <tr>
               <td width="30%">{{ $t('description') }}</td>
               <td
                 class="py-5"
                 v-html="$utils.formatArrayValue(source.description, '<br />')"
               ></td>
+            </tr>
+
+            <tr v-if="source.text">
+              <td width="30%">{{ $t('text') }}</td>
+              <td class="py-5">
+                <div
+                  style="max-height: 200px; overflow-y: auto"
+                  v-html="$utils.formatArrayValue(source.text)"
+                ></div>
+              </td>
             </tr>
 
             <template
@@ -437,13 +454,15 @@ export default {
       const query = `
       PREFIX schema: <http://schema.org/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT DISTINCT * WHERE {
+      SELECT DISTINCT ?s ?label ?description ?image WHERE {
+        ?cho ?p ?s . 
         ?s rdfs:label ?label .
         filter (${filter})
         optional { ?s schema:description ?description }
         optional { ?s schema:image ?image }
       }
       `
+
       let url = this.endpoint + '?query='
 
       url = url + encodeURIComponent(query) + '&output=json'
@@ -573,6 +592,9 @@ export default {
       this.markers = markers
     },
     getIframeUrl() {
+      if (!this.source.manifest) {
+        return null
+      }
       const manifest = this.source.manifest
       if (!this.source.member) {
         const url =

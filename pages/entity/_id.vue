@@ -147,15 +147,10 @@ export default class PageCategory extends Vue {
     const query = `
       PREFIX schema: <http://schema.org/>
       PREFIX type: <https://jpsearch.go.jp/term/type/>
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX dct: <http://purl.org/dc/terms/>
-      PREFIX hpdb: <https://w3id.org/hpdb/api/>
-      PREFIX sh: <http://www.w3.org/ns/shacl#>
       SELECT DISTINCT (count(DISTINCT ?s) as ?c) WHERE {
+        ?cho ?p ?s . 
         ?s rdf:type ${type} . 
         ${
           keyword !== ''
@@ -173,7 +168,7 @@ export default class PageCategory extends Vue {
 
     const results = await axios.get(url)
 
-    return results.data.results.bindings[0].c.value
+    return Number(results.data.results.bindings[0].c.value)
   }
 
   async search() {
@@ -197,20 +192,16 @@ export default class PageCategory extends Vue {
     const query = `
       PREFIX schema: <http://schema.org/>
       PREFIX type: <https://jpsearch.go.jp/term/type/>
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX dct: <http://purl.org/dc/terms/>
-      PREFIX hpdb: <https://w3id.org/hpdb/api/>
-      PREFIX sh: <http://www.w3.org/ns/shacl#>
-      SELECT DISTINCT * WHERE {
+      PREFIX jps: <https://jpsearch.go.jp/term/property#>
+      SELECT DISTINCT ?s ?label ?image count(?cho) as ?c WHERE {
+        ?cho ?p ?s; jps:sourceInfo ?source . 
         ?s rdfs:label ?label;  rdf:type ${type} . 
         ${keyword !== '' ? "filter regex(?label, '" + keyword + "', 'i')" : ''}
             optional { ?s schema:image ?image } 
       }
-      ORDER BY desc(?image)
+      ORDER BY desc(?c)
       LIMIT ${this.perPage}
       OFFSET ${from}
     `
@@ -236,7 +227,7 @@ export default class PageCategory extends Vue {
         queryObj[field] = obj.label.value
 
         const person: any = {
-          label: obj.label.value,
+          label: obj.label.value, // + ' （' + obj.c.value + '）',
           path: {
             /*
             name: 'search',
@@ -253,7 +244,8 @@ export default class PageCategory extends Vue {
         if (obj.image) {
           person.image = obj.image.value
         } else {
-          person.image = process.env.BASE_URL + '/img/icons/no-image.png'
+          person.image =
+            'https://raw.githubusercontent.com/hi-ut/static_images/main/no_image.svg'
         }
 
         const url = process.env.BASE_URL + '/snorql/?describe=' + obj.s.value

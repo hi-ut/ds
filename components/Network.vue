@@ -29,7 +29,7 @@ import axios from 'axios'
 const { Network } = require('vue-vis-network')
 
 function getCode(p: string) {
-  if (p === 'http://schema.org/agential') {
+  if (p === 'https://w3id.org/hi/api/term/property#agential') {
     return '\uF007'
   } else if (p === 'http://schema.org/spatial') {
     return '\uF279'
@@ -144,7 +144,10 @@ export default class about extends Vue {
           label: obj.label.value,
           id: Object.keys(nodes2).length,
           uri: s,
-          p: 'http://schema.org/' + entity,
+          p:
+            entity === 'agential'
+              ? 'https://w3id.org/hi/api/term/property#agential'
+              : 'http://schema.org/' + entity,
           color: 'lightgreen',
         }
 
@@ -158,7 +161,7 @@ export default class about extends Vue {
         } else {
           node.shape = 'icon'
           node.icon = {
-            code: getCode('http://schema.org/' + entity),
+            code: getCode(node.p),
             color: 'gray',
           }
         }

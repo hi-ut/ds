@@ -9,7 +9,7 @@ env.facetOptions = {
     open: true,
   },
   type: {
-    label: 'about',
+    label: 'type',
     open: false,
   },
   agential: {
