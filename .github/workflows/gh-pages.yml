@@ -44,6 +44,6 @@ jobs:
       if: success()
       uses: rtCamp/action-slack-notify@v2.0.2
       env:
-        SLACK_CHANNEL: website
-        SLACK_TITLE: Test Success
+        SLACK_CHANNEL: データ駆動型検索システム
+        SLACK_TITLE: Deploy Success
         SLACK_COLOR: good
