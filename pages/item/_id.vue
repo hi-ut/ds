@@ -505,7 +505,10 @@ export default {
         const image = hit.image ? [hit.image.value] : [setting.mdi]
 
         if (hit.description) {
-          item._source.description = [hit.description.value]
+          item._source.description = [
+            hit.description.value +
+              ` <a href="https://ja.wikipedia.org/wiki/${facet}">Wikipedia</a>`,
+          ]
         }
 
         item._source._thumbnail = image

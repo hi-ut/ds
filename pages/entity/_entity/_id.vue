@@ -17,6 +17,7 @@
 
       <p v-if="entity.description" class="my-5">
         {{ entity.description.value }}
+        <a :href="'https://ja.wikipedia.org/wiki/' + id">Wikipedia</a>
       </p>
 
       <div class="text-center my-5">
@@ -207,6 +208,7 @@ export default {
 
       const res = await axios.get(url)
       const results = res.data.results.bindings
+
       this.entities = results
     },
     getQuery(label, value) {
