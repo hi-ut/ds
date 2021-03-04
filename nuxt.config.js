@@ -33,6 +33,7 @@ env.facetOptions = {
 env.endpoint = 'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql'
 env.es = 'https://gimli-eu-west-1.searchly.com'
 env.password = '1ff162746e60feac7c91c12d37cf0ca6'
+env.layout = 'list'
 
 console.log({ env })
 

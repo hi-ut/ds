@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card flat>
     <v-row class="pa-4 mb-5">
       <v-col cols="12" sm="3" class="mb-4">
         <nuxt-link
@@ -20,7 +20,7 @@
         </nuxt-link>
       </v-col>
       <v-col cols="12" sm="9">
-        <h3 class="mb-4">
+        <h3 class="mb-2">
           <nuxt-link
             :to="
               localePath({
@@ -34,24 +34,30 @@
           </nuxt-link>
         </h3>
 
-        <template v-for="(obj, field) in item._source">
-          <!-- sorted -->
-          <template v-if="!field.startsWith('_')">
-            <dl :key="field" class="row my-0 py-0">
-              <dt class="col-sm-3 my-0 py-0">
-                <span class="text-muted">{{ field }}</span>
-              </dt>
-              <dd class="col-sm-9 my-0 py-0">
-                <template>
-                  <span v-for="(value, index) in obj" :key="index" class="mr-4">
-                    {{ $utils.truncate(value, 100) }}
-                  </span>
-                </template>
-              </dd>
-            </dl>
-            <v-divider :key="'v-divider-' + field" />
+        <p>
+          {{ $t('source') }}:
+          {{ $utils.formatArrayValue(item._source.source) }}
+          <template v-if="item._source.agential">
+            / {{ $utils.formatArrayValue(item._source.agential) }}
           </template>
-        </template>
+          <template v-if="item._source.spatial">
+            / {{ $utils.formatArrayValue(item._source.spatial) }}
+          </template>
+          <template v-if="item._source.temporal">
+            / {{ $utils.formatArrayValue(item._source.temporal) }}
+          </template>
+        </p>
+
+        <div
+          style="
+            max-height: 200px;
+            overflow-y: auto;
+            color: #646464;
+            font-size: small;
+          "
+        >
+          {{ $utils.formatArrayValue(item._source.text) }}
+        </div>
 
         <div class="text-right mt-4">
           <a

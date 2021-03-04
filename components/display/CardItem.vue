@@ -1,5 +1,7 @@
 <template>
   <v-card
+    flat
+    outlined
     no-body
     :class="horizontal ? '' : 'mb-4'"
     :style="horizontal ? 'width: ' + width + 'px;' : ''"

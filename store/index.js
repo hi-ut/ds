@@ -41,7 +41,7 @@ export const state = () => ({
   userName: '',
   userPic: '',
   items: [],
-  isSignedIn: false
+  isSignedIn: false,
 })
 
 export const mutations = {
@@ -56,7 +56,7 @@ export const mutations = {
     // 要検討
     state.advanced = {
       q: {},
-      fc: {}
+      fc: {},
     }
 
     for (const key in routeQuery) {
@@ -72,7 +72,7 @@ export const mutations = {
           if (!advanced[label]) {
             advanced[label] = {
               '+': [],
-              '-': []
+              '-': [],
             }
           }
           const obj = advanced[label]
@@ -181,7 +181,7 @@ export const mutations = {
     if (!advanced[label]) {
       advanced[label] = {
         '+': [],
-        '-': []
+        '-': [],
       }
     }
     const obj = advanced[label]
@@ -208,7 +208,7 @@ export const mutations = {
         method = '-'
       }
       const arr = advanced[label][method]
-      advanced[label][method] = arr.filter(item => item !== value)
+      advanced[label][method] = arr.filter((item) => item !== value)
     }
   },
   // changeかセットか
@@ -217,14 +217,14 @@ export const mutations = {
   },
   removeKeyword(state, value) {
     const array = state.keyword
-    const newArray = array.filter(n => !value.includes(n))
+    const newArray = array.filter((n) => !value.includes(n))
     state.keyword = newArray
   },
 
   // ゆくゆくは統合予定
   removeKey(state, data) {
     const array = state[data.label]
-    const newArray = array.filter(n => !data.value.includes(n))
+    const newArray = array.filter((n) => !data.value.includes(n))
     state[data.label] = newArray
   },
 
@@ -255,7 +255,7 @@ export const mutations = {
   },
   setUserPic(state, value) {
     state.userPic = value
-  }
+  },
 }
 
 export const actions = {
@@ -265,7 +265,7 @@ export const actions = {
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then(function(result) {
+      .then(function (result) {
         const user = result.user
         console.log('success : ' + user.uid + ' : ' + user.displayName)
 
@@ -273,11 +273,11 @@ export const actions = {
         commit('setUserName', user.displayName)
         commit('setUserPic', user.photoURL)
       })
-      .catch(function(error) {
-        var errorCode = error.code
+      .catch(function (error) {
+        const errorCode = error.code
         console.log('error : ' + errorCode)
       })
-  }
+  },
 }
 
 export const getters = {
@@ -295,5 +295,5 @@ export const getters = {
   },
   getUserPic(state) {
     return state.userPic
-  }
+  },
 }

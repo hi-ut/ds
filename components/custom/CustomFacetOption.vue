@@ -1,6 +1,7 @@
 <template>
   <v-expansion-panels
     v-if="buckets.length > 0 || getArray('-').length > 0"
+    flat
     :value="openFlag ? 0 : null"
   >
     <v-expansion-panel>

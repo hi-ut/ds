@@ -71,15 +71,15 @@ export default class TableSearchResult extends Vue {
   }
 
   mounted() {
-    const facetLabels: any = this.$store.state.facetLabels
+    const facetOptions: any = this.$store.state.facetOptions
     const fields: any = [
       { key: 'image', label: '' },
       { key: 'label', label: this.$t('title') },
     ]
-    for (const field in facetLabels) {
+    for (const field in facetOptions) {
       fields.push({
         key: field,
-        label: facetLabels[field],
+        label: facetOptions[field].label,
       })
     }
     fields.push({ key: 'icons', label: '' })

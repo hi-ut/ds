@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <template v-for="(value, label) in facetLabels">
+  <div class="mt-10">
+    <template v-for="(value, label) in facetOptions">
       <v-card
         v-if="
           aggregations[label] &&
@@ -8,11 +8,12 @@
           aggregations[label].buckets.length > 0
         "
         :key="label"
+        flat
         no-body
         class="mb-10"
       >
         <v-card-title class="grey lighten-2">{{
-          value.startsWith('_') ? $t(value.slice(1)) : $t(value)
+          label.startsWith('_') ? $t(label.slice(1)) : $t(label)
         }}</v-card-title>
 
         <div class="pa-5">
@@ -41,8 +42,9 @@ export default class StatsSearchResult extends Vue {
     return this.$store.state.result.aggregations
   }
 
-  get facetLabels() {
-    return this.$store.state.facetLabels
+  get facetOptions() {
+    console.log(this.$store.state.facetOptions)
+    return this.$store.state.facetOptions
   }
 }
 </script>

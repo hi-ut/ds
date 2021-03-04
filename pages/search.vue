@@ -59,10 +59,11 @@ export default class search extends Vue {
   ]
 
   layoutOptions: any[] = [
+    { value: 'list', text: 'list' },
     { value: 'grid', text: 'grid' },
     { value: 'image', text: 'thumbnail' },
     { value: 'table', text: 'table' },
-    // { value: 'stats', text: 'graph' },
+    { value: 'stats', text: 'graph' },
   ]
 
   get facetOptions(): any {
@@ -88,14 +89,14 @@ export default class search extends Vue {
 
   async search() {
     const store = this.$store
-    const routeQuery = this.$route.query
+    const routeQuery: any = this.$route.query
 
     // 初期化
     if (!routeQuery.sort) {
       routeQuery.sort = '_score:desc'
     }
     if (!routeQuery.layout) {
-      routeQuery.layout = 'grid'
+      routeQuery.layout = process.env.layout
     }
     this.loadingFlag = true
     store.commit('init', routeQuery)
