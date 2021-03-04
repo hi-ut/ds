@@ -57,9 +57,7 @@
               icon
               class="mx-2"
               target="_blank"
-              :href="
-                baseUrl + '/snorql/?describe=' + prefix + '/api/data/' + id
-              "
+              :href="baseUrl + '/snorql/?describe=' + uri"
               v-on="on"
               ><img :src="baseUrl + '/img/icons/rdf-logo.svg'" width="30px"
             /></v-btn>
@@ -164,6 +162,13 @@
           :query="source._label"
           :fields="['_label']"
         />
+      </div>
+
+      <div v-if="relatedItems.length > 0" class="mt-10">
+        <div class="text-center">
+          <h3 class="my-5">{{ $t('関連するアイテム') }}</h3>
+        </div>
+        <HorizontalItems :data="relatedItems" height="150" />
       </div>
 
       <div v-if="entity.all.length > 0" class="mt-10">
@@ -360,6 +365,7 @@ export default {
       },
       markers: [],
       center: null,
+      relatedItems: [],
     }
   },
 
@@ -368,6 +374,9 @@ export default {
     url() {
       // `this` は vm インスタンスを指します
       return this.source._url
+    },
+    uri() {
+      return this.prefix + '/api/data/' + this.id
     },
     id() {
       return this.$route.params.id
@@ -402,6 +411,7 @@ export default {
     this.getEntity('about')
     this.getEntity('temporal')
     this.getMarker()
+    this.getRelatedItems()
   },
 
   methods: {
@@ -590,6 +600,160 @@ export default {
       this.center = [lats / results.length, longs / results.length]
 
       this.markers = markers
+    },
+    async getRelatedItems() {
+      const u = this.uri
+
+      const query = `
+        PREFIX schema: <http://schema.org/>
+        PREFIX hi: <https://w3id.org/hi/api/term/property#>
+        PREFIX jps: <https://jpsearch.go.jp/term/property#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT DISTINCT ?p ?label_k ?cho ?image ?label WHERE { 
+          BIND(<${u}> as ?cho2)
+          ?cho2 ?p ?s . 
+          ?s rdfs:label ?label_k . 
+          ?cho ?p ?s . 
+          filter (?p != rdf:type && ?p != jps:agential 
+          && ?p != schema:license && ?p != jps:relationType && ?p != jps:spatial)
+          filter(?cho != ?cho2)
+          ?cho rdfs:label ?label . 
+          optional { ?cho schema:image ?image . }
+        } order by rand() limit 20
+      `
+
+      let url = this.endpoint + '?query='
+
+      url = url + encodeURIComponent(query) + '&output=json'
+
+      const res = await axios.get(url)
+
+      const results = res.data.results.bindings
+
+      const relatedItems = []
+
+      for (let i = 0; i < results.length; i++) {
+        const obj = results[i]
+
+        const uri = obj.cho.value
+        const dd = uri.split('/')
+        const id = dd[dd.length - 1]
+
+        const dd2 = obj.p.value.split('/')
+        let ln = dd2[dd2.length - 1]
+        if (ln.includes('#')) {
+          ln = ln.split('#')[1]
+        }
+        const relation = this.$t(ln)
+
+        const source = {
+          _label: [obj.label.value],
+          _url: [
+            this.baseUrl +
+              this.localePath({
+                name: 'item-id',
+                params: {
+                  id,
+                },
+              }),
+          ],
+          description: [
+            this.$i18n.locale === 'ja'
+              ? `${relation}が同じ${obj.label_k.value}のアイテムです。`
+              : `${relation} ${obj.label_k.value} is the same.`,
+          ],
+        }
+
+        const item = {
+          to: this.localePath({
+            name: 'item-id',
+            params: {
+              id,
+            },
+          }),
+          _source: source,
+        }
+
+        if (obj.image) {
+          source._thumbnail = [obj.image.value]
+        }
+
+        relatedItems.push(item)
+
+        /*
+
+        if (!item) {
+          continue
+        }
+
+        const facet = values[i]
+        const uri = this.github + '/api/' + setting.slug + '/' + facet
+
+        if (!map[uri]) {
+          continue
+        }
+        const hit = map[uri]
+
+        const image = hit.image ? [hit.image.value] : [setting.mdi]
+
+        if (hit.description) {
+          item._source.description = [hit.description.value]
+        }
+
+        item._source._thumbnail = image
+        */
+      }
+
+      this.relatedItems = relatedItems
+
+      /*
+
+      let url = this.endpoint + '?query='
+
+      url = url + encodeURIComponent(query) + '&output=json'
+
+      const res = await axios.get(url)
+      const results = res.data.results.bindings
+
+      const map = {}
+
+      for (let i = 0; i < results.length; i++) {
+        const hit = results[i]
+        map[hit.s.value] = hit
+      }
+
+      for (let i = 0; i < values.length; i++) {
+        const item = moreLikeThisData0[i]
+
+        if (!item) {
+          continue
+        }
+
+        const facet = values[i]
+        const uri = this.github + '/api/' + setting.slug + '/' + facet
+
+        if (!map[uri]) {
+          continue
+        }
+        const hit = map[uri]
+
+        const image = hit.image ? [hit.image.value] : [setting.mdi]
+
+        if (hit.description) {
+          item._source.description = [hit.description.value]
+        }
+
+        item._source._thumbnail = image
+      }
+
+      this.entity[field] = moreLikeThisData0
+      const arr = this.entity.all
+      for (let i = 0; i < moreLikeThisData0.length; i++) {
+        arr.push(moreLikeThisData0[i])
+      }
+
+      this.entity.all = arr
+      */
     },
     getIframeUrl() {
       if (!this.source.manifest) {
