@@ -164,6 +164,16 @@
         />
       </div>
 
+      <div
+        v-show="$refs.si && $refs.si.moreLikeThisData.length > 0"
+        class="mt-10"
+      >
+        <div class="text-center">
+          <h3 class="my-5">{{ $t('画像が似ているアイテム') }}</h3>
+        </div>
+        <SimilarImages ref="si" :item-id="id" />
+      </div>
+
       <div v-if="relatedItems.length > 0" class="mt-10">
         <div class="text-center">
           <h3 class="my-5">{{ $t('関連するアイテム') }}</h3>
@@ -273,12 +283,15 @@ import HorizontalItems from '~/components/display/HorizontalItems.vue'
 import ResultOption from '~/components/display/ResultOption.vue'
 import Mapc from '~/components/common/Map.vue'
 import MoreLikeThis from '~/components/item/MoreLikeThis.vue'
+import SimilarImages from '~/components/item/SimilarImages.vue'
+
 export default {
   components: {
     HorizontalItems,
     ResultOption,
     Mapc,
     MoreLikeThis,
+    SimilarImages,
   },
   async asyncData({ payload, app }) {
     if (payload) {

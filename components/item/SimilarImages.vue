@@ -1,10 +1,6 @@
 <template>
   <div v-if="moreLikeThisData.length > 0">
-    <!-- <v-divider class="my-10" /> -->
-    <h3 class="mb-4">
-      {{ $t('similar_images') }}
-    </h3>
-    <HorizontalItems :key="itemId" :data="moreLikeThisData" />
+    <HorizontalItems :key="itemId" :data="moreLikeThisData" :height="150" />
   </div>
 </template>
 
@@ -26,11 +22,6 @@ export default class morelikethis extends Vue {
   })
   itemId!: string
 
-  @Prop({
-    required: true,
-  })
-  query!: string
-
   mounted() {
     this.moreLikeThis()
   }
@@ -41,7 +32,22 @@ export default class morelikethis extends Vue {
   }
 
   async moreLikeThis() {
-    const images = this.query
+    // 類似画像の一覧取得
+    const url2 = process.env.es + '/image/_doc/' + this.itemId
+
+    const username = 'search'
+    const password: any = process.env.password
+
+    const response2 = await axios.get(url2, {
+      auth: {
+        username,
+        password,
+      },
+    })
+
+    const images = response2.data._source.similar_images.slice(0, 10)
+
+    // 類似アイテムの取得
 
     const esQuery = {
       query: {
@@ -51,12 +57,12 @@ export default class morelikethis extends Vue {
       },
     }
 
-    const url = 'https://gimli-eu-west-1.searchly.com/main/_search'
+    const url = process.env.es + '/main/_search'
 
     const response = await axios.post(url, esQuery, {
       auth: {
-        username: 'search',
-        password: 'lqtia2ngm63yi5tam7ewxjvqhogjem82',
+        username,
+        password,
       },
     })
 
@@ -76,7 +82,10 @@ export default class morelikethis extends Vue {
     for (let i = 0; i < images.length; i++) {
       const id = images[i]
       if (map[id]) {
-        result2.push(map[id])
+        const obj: any = map[id]
+        obj.to = this.localePath({ name: 'item-id', params: { id } })
+        obj._source.description = []
+        result2.push(obj)
       }
     }
 

@@ -373,5 +373,6 @@
   "関連する事物" : "Related Entities",
   "ノードをダブルクリックすることで、当該事物のページに遷移します。" : "Move to other entity with double click.",
   "データ駆動型検索プロトタイプ" : "Search Prototype",
-  "関連するアイテム" : "Related items"
+  "関連するアイテム" : "Related items",
+  "画像が似ているアイテム" : "Similar images"
 }
