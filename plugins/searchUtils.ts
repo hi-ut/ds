@@ -190,85 +190,187 @@ export class SearchUtils {
     for (const field in routeQuery) {
       if (field.startsWith('q-') || field.startsWith('fc-')) {
         const qsField = field
-
-        const type: string = qsField.split('-')[0]
-
-        const prefix: string = qsField.split('-')[0]
-
-        const mustOfFilter: string = prefix === 'q' ? 'must' : 'filter' // fc-の場合はfilter
-
-        const boolQuery = ops[prefix] ? 'should' : mustOfFilter // OR条件
-
         const value = routeQuery[qsField]
-        let values = []
-        if (!Array.isArray(value)) {
-          values = [value]
-        } else {
-          values = value
-        }
 
-        const pluses: string[] = []
-        const minuses: string[] = []
+        if (qsField === 'q-tempo') {
+          const dd = value.split(',')
+          const after = dd[0]
 
-        for (let j = 0; j < values.length; j++) {
-          const value = values[j]
-          if (value.startsWith('-')) {
-            minuses.push(value.slice(1))
-          } else {
-            pluses.push(value)
-          }
-        }
-
-        // minuses
-        for (let j = 0; j < minuses.length; j++) {
-          const value = minuses[j]
-          if (type === 'fc') {
-            const termPhase: any = {}
-            termPhase[field.slice(3) + '.keyword'] = value // "fc-"の除外
-
-            query.bool.must_not.push({
-              term: termPhase,
-            })
-          } else {
-            const termPhase: any = {}
-            termPhase[field.slice(2)] = value // "-"の除外 // "q-"の除外
-
-            query.bool.must_not.push({
-              term: termPhase,
-            })
-          }
-        }
-
-        if (pluses.length === 0) {
-          continue
-        }
-        // ファセット か 否か
-        if (type === 'fc') {
-          const shoulds: any[] = []
-          for (let j = 0; j < pluses.length; j++) {
-            const value = values[j]
-            const termPhase: any = {}
-            termPhase[field.slice(3) + '.keyword'] = value // "q-"の除外
-
-            shoulds.push({
-              term: termPhase,
-            })
-          }
-          query.bool[boolQuery].push({
+          /*
+          query.bool.filter.push({
             bool: {
-              should: shoulds,
+              should: [
+                {
+                  bool: {
+                    must: [
+                      {
+                        range: {
+                          temporal: {
+                            lte: after, // Number(after),
+                          },
+                        },
+                      },
+                      {
+                        range: {
+                          temporal: {
+                            gte: after, // Number(after),
+                          },
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  range: {
+                    temporal: {
+                      gte: after, // Number(after),
+                    },
+                  },
+                },
+              ],
             },
           })
-        } else {
-          // plus
-          for (let j = 0; j < pluses.length; j++) {
-            const value = values[j]
-            const termPhase: any = {}
-            termPhase[field.slice(2)] = value // "q-"の除外
+          */
 
-            query.bool[boolQuery].push({
-              term: termPhase,
+          // 応急処置
+          if (Number(after) >= 1000) {
+            query.bool.filter.push({
+              range: {
+                temporal: {
+                  gte: after, // Number(after),
+                },
+              },
             })
+          }
+
+          if (dd.length === 2) {
+            const before = dd[1]
+
+            /*
+            query.bool.filter.push({
+              bool: {
+                should: [
+                  {
+                    bool: {
+                      must: [
+                        {
+                          range: {
+                            temporal: {
+                              lte: before, // Number(after),
+                            },
+                          },
+                        },
+                        {
+                          range: {
+                            temporal: {
+                              gte: before, // Number(after),
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    range: {
+                      temporal: {
+                        lte: before, // Number(after),
+                      },
+                    },
+                  },
+                ],
+              },
+            })
+            */
+
+            if (before) {
+              query.bool.filter.push({
+                range: {
+                  temporal: {
+                    lte: before, // Number(after),
+                  },
+                },
+              })
+            }
+          }
+        } else {
+          const type: string = qsField.split('-')[0]
+
+          const prefix: string = qsField.split('-')[0]
+
+          const mustOfFilter: string = prefix === 'q' ? 'must' : 'filter' // fc-の場合はfilter
+
+          const boolQuery = ops[prefix] ? 'should' : mustOfFilter // OR条件
+
+          let values = []
+          if (!Array.isArray(value)) {
+            values = [value]
+          } else {
+            values = value
+          }
+
+          const pluses: string[] = []
+          const minuses: string[] = []
+
+          for (let j = 0; j < values.length; j++) {
+            const value = values[j]
+            if (value.startsWith('-')) {
+              minuses.push(value.slice(1))
+            } else {
+              pluses.push(value)
+            }
+          }
+
+          // minuses
+          for (let j = 0; j < minuses.length; j++) {
+            const value = minuses[j]
+            if (type === 'fc') {
+              const termPhase: any = {}
+              termPhase[field.slice(3) + '.keyword'] = value // "fc-"の除外
+
+              query.bool.must_not.push({
+                term: termPhase,
+              })
+            } else {
+              const termPhase: any = {}
+              termPhase[field.slice(2)] = value // "-"の除外 // "q-"の除外
+
+              query.bool.must_not.push({
+                term: termPhase,
+              })
+            }
+          }
+
+          if (pluses.length === 0) {
+            continue
+          }
+          // ファセット か 否か
+          if (type === 'fc') {
+            const shoulds: any[] = []
+            for (let j = 0; j < pluses.length; j++) {
+              const value = values[j]
+              const termPhase: any = {}
+              termPhase[field.slice(3) + '.keyword'] = value // "q-"の除外
+
+              shoulds.push({
+                term: termPhase,
+              })
+            }
+            query.bool[boolQuery].push({
+              bool: {
+                should: shoulds,
+              },
+            })
+          } else {
+            // plus
+            for (let j = 0; j < pluses.length; j++) {
+              const value = values[j]
+              const termPhase: any = {}
+              termPhase[field.slice(2)] = value // "q-"の除外
+
+              query.bool[boolQuery].push({
+                term: termPhase,
+              })
+            }
           }
         }
 
@@ -959,12 +1061,12 @@ export class SearchUtils {
       const queryKey = Object.keys(obj.order)[0]
 
       let sortKey = 'value'
-      if (queryKey == '_term') {
+      if (queryKey === '_term') {
         sortKey = 'key'
       }
 
       let order = 1
-      if (obj.order[queryKey] == 'asc') {
+      if (obj.order[queryKey] === 'asc') {
         order = -1
       }
 

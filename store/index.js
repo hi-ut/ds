@@ -1,8 +1,5 @@
 import firebase from '~/plugins/firebase'
 
-const db = firebase.firestore()
-const itemRef = db.collection('users')
-
 function convert2arr(value) {
   let values = []
   if (!Array.isArray(value)) {
@@ -17,6 +14,7 @@ export const state = () => ({
   sort: '',
   size: -1,
   from: -1,
+  tempo: '',
   keyword: [],
   advanced: {},
   currentPage: 1,
@@ -110,6 +108,13 @@ export const mutations = {
       state.from = 0
     }
 
+    const tempo = routeQuery['q-tempo']
+    if (tempo) {
+      state.tempo = tempo
+    } else {
+      state.tempo = ''
+    }
+
     const size = routeQuery.size
     if (size) {
       state.size = Number(size)
@@ -164,6 +169,9 @@ export const mutations = {
   setFrom(state, value) {
     state.from = value
   },
+  setTempo(state, value) {
+    state.tempo = value
+  },
   setFacetFlag(state, value) {
     state.facetFlag = value
   },
@@ -184,6 +192,33 @@ export const mutations = {
         '-': [],
       }
     }
+    const obj = advanced[label]
+
+    for (let i = 0; i < values.length; i++) {
+      const value = values[i]
+      if (value.startsWith('-')) {
+        obj['-'].push(value.slice(1))
+      } else {
+        obj['+'].push(value)
+      }
+    }
+  },
+  replaceAdvanced(state, value) {
+    const label = value.label
+    let values = value.values
+    values = convert2arr(values)
+
+    const type = value.type
+
+    const advanced = state.advanced[type]
+
+    //
+    advanced[label] = {
+      '+': [],
+      '-': [],
+    }
+    //
+
     const obj = advanced[label]
 
     for (let i = 0; i < values.length; i++) {

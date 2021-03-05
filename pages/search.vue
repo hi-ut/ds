@@ -56,6 +56,30 @@ export default class search extends Vue {
       value: '_score:desc',
       text: this.$t('relevance'),
     },
+    {
+      value: 'temporal.keyword:asc',
+      text: this.$t('temporal') + ' ' + this.$t('asc'),
+    },
+    {
+      value: 'temporal.keyword:desc',
+      text: this.$t('temporal') + ' ' + this.$t('desc'),
+    },
+    {
+      value: '_label.keyword:asc',
+      text: this.$t('title') + ' ' + this.$t('asc'),
+    },
+    {
+      value: '_label.keyword:desc',
+      text: this.$t('title') + ' ' + this.$t('desc'),
+    },
+    {
+      value: 'agential.keyword:asc',
+      text: this.$t('agential') + ' ' + this.$t('asc'),
+    },
+    {
+      value: 'agential.keyword:desc',
+      text: this.$t('agential') + ' ' + this.$t('desc'),
+    },
   ]
 
   layoutOptions: any[] = [
