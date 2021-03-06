@@ -118,8 +118,11 @@ export default class PageMap extends Vue {
       const fcField = 'fc-spatial'
       param[fcField] = label
 
+      const lat = Number(obj.lat.value)
+      const long = Number(obj.long.value)
+
       const marker: any = {
-        latlng: [obj.lat.value, obj.long.value],
+        latlng: [lat, long],
         content: label,
         path: {
           name: 'entity-entity-id',
@@ -130,8 +133,8 @@ export default class PageMap extends Vue {
         },
       }
 
-      lats += obj.lat.value
-      longs += obj.long.value
+      lats += lat
+      longs += long
 
       markers.push(marker)
     }
