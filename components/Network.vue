@@ -6,7 +6,6 @@
       {{
         $t('ノードをダブルクリックすることで、当該事物のページに遷移します。')
       }}
-      関連度: 共起頻度
     </p>
     <v-row dense>
       <v-col cols="12" :sm="3">
@@ -205,7 +204,9 @@
           </v-col>
           <v-col cols="12" :sm="3">
             <v-sheet class="grey lighten-3 pa-2"
-              ><h3><v-icon>mdi-view-list</v-icon> 事物一覧</h3></v-sheet
+              ><h3>
+                <v-icon>mdi-view-list</v-icon> {{ $t('entity') }}
+              </h3></v-sheet
             >
             <v-list dense style="max-height: 600px; overflow-y: auto">
               <v-list-item

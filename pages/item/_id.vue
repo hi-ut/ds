@@ -448,8 +448,8 @@ export default {
         const value = values[i]
 
         const to = this.localePath({
-          name: 'entity-entity-id',
-          params: { entity: field, id: value },
+          name: 'entity-slug-id',
+          params: { slug: field, id: value },
         })
 
         moreLikeThisData0.push({
@@ -604,9 +604,9 @@ export default {
           latlng: [lat, long],
           content: label,
           path: {
-            name: 'entity-entity-id',
+            name: 'entity-slug-id',
             params: {
-              entity: 'spatial',
+              slug: 'spatial',
               id: label,
             },
           },

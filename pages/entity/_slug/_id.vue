@@ -94,10 +94,7 @@ export default {
     if (payload) {
       return { item: payload }
     } else {
-      // const id = app.context.params.id
       const field = app.context.params.slug
-      console.log({ field })
-
       return { field, items: [] }
     }
   },
@@ -125,7 +122,7 @@ export default {
     },
 
     id() {
-      return this.$route.params.slug
+      return this.$route.params.id
     },
 
     url() {

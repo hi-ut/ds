@@ -210,9 +210,9 @@ export default class PageCategory extends Vue {
             name: 'search',
             query: queryObj,
             */
-            name: 'entity-entity-id',
+            name: 'entity-slug-id',
             params: {
-              entity: tmp,
+              slug: tmp,
               id: obj.label.value,
             },
           },
