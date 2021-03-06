@@ -595,8 +595,11 @@ export default {
         const fcField = 'fc-spatial'
         param[fcField] = label
 
+        const lat = Number(obj.lat.value)
+        const long = Number(obj.long.value)
+
         const marker = {
-          latlng: [obj.lat.value, obj.long.value],
+          latlng: [lat, long],
           content: label,
           path: {
             name: 'entity-entity-id',
@@ -607,15 +610,17 @@ export default {
           },
         }
 
-        lats += obj.lat.value
-        longs += obj.long.value
+        lats += lat
+        longs += long
 
         markers.push(marker)
       }
 
-      this.center = [lats / results.length, longs / results.length]
-
-      this.markers = markers
+      if (results.length > 0) {
+        const center = [lats / results.length, longs / results.length]
+        this.center = center
+        this.markers = markers
+      }
     },
     async getRelatedItems() {
       const u = this.uri
