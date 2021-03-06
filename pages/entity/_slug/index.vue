@@ -14,7 +14,6 @@
       <h2 class="my-5">
         {{ title }} <small>（{{ total.toLocaleString() }}）</small>
       </h2>
-
       <template v-if="loadingFlag">
         <div class="text-center my-10">
           <v-progress-circular
@@ -56,6 +55,12 @@
 
         <grid :col="4" :list="people"></grid>
 
+        {{ currentPage }}
+
+        aaa
+
+        {{ paginationLength }}
+
         <div class="text-center my-10">
           <v-pagination
             v-model="currentPage"
@@ -84,36 +89,7 @@ export default class PageCategory extends Vue {
   endpoint: string =
     'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql'
 
-  settings: any = {
-    agential: {
-      type: 'type:Agent',
-      query: 'fc-agentials',
-      label: 'agential',
-      slug: 'entity/chname',
-      mdi: 'mdi-account',
-    },
-    spatial: {
-      type: 'type:Place',
-      query: 'fc-places',
-      label: 'temporal',
-      mdi: 'mdi-map',
-      slug: 'entity/place',
-    },
-    about: {
-      type: 'type:Keyword',
-      query: 'fc-about',
-      label: 'about',
-      mdi: 'mdi-tag',
-      slug: 'term/keyword',
-    },
-    temporal: {
-      type: 'type:Time',
-      query: 'fc-temporal',
-      label: 'temporal',
-      mdi: 'mdi-calendar',
-      slug: 'entity/time',
-    },
-  }
+  settings: any = process.env.settings
 
   loadingFlag: boolean = true
   results: any[] = []
@@ -149,8 +125,9 @@ export default class PageCategory extends Vue {
       PREFIX type: <https://jpsearch.go.jp/term/type/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX jps: <https://jpsearch.go.jp/term/property#>
       SELECT DISTINCT (count(DISTINCT ?s) as ?c) WHERE {
-        ?cho ?p ?s . 
+        ?cho ?p ?s; jps:sourceInfo ?source . 
         ?s rdf:type ${type} . 
         ${
           keyword !== ''
@@ -172,7 +149,7 @@ export default class PageCategory extends Vue {
   }
 
   async search() {
-    const id: any = this.$route.params.id
+    const id: any = this.$route.params.slug
     this.id = id
 
     const total = await this.getTotal()
@@ -195,7 +172,7 @@ export default class PageCategory extends Vue {
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX jps: <https://jpsearch.go.jp/term/property#>
-      SELECT DISTINCT ?s ?label ?image count(?cho) as ?c WHERE {
+      SELECT DISTINCT ?s ?label ?image count(distinct ?cho) as ?c WHERE {
         ?cho ?p ?s; jps:sourceInfo ?source . 
         ?s rdfs:label ?label;  rdf:type ${type} . 
         ${keyword !== '' ? "filter regex(?label, '" + keyword + "', 'i')" : ''}
@@ -244,8 +221,19 @@ export default class PageCategory extends Vue {
         if (obj.image) {
           person.image = obj.image.value
         } else {
-          person.image =
-            'https://raw.githubusercontent.com/hi-ut/static_images/main/no_image.svg'
+          let image =
+            'https://raw.githubusercontent.com/hi-ut/static_images/main/account.png'
+          if (id === 'spatial') {
+            image =
+              'https://raw.githubusercontent.com/hi-ut/static_images/main/map-marker.png'
+          } else if (id === 'about') {
+            image =
+              'https://raw.githubusercontent.com/hi-ut/static_images/main/tag.png'
+          } else if (id === 'temporal') {
+            image =
+              'https://raw.githubusercontent.com/hi-ut/static_images/main/calendar.png'
+          }
+          person.image = image
         }
 
         const url = process.env.BASE_URL + '/snorql/?describe=' + obj.s.value
@@ -260,7 +248,7 @@ export default class PageCategory extends Vue {
   }
 
   get title() {
-    return this.$t(this.settings[this.$route.params.id].label)
+    return this.$t(this.settings[this.$route.params.slug].label)
   }
 
   head() {
@@ -282,9 +270,9 @@ export default class PageCategory extends Vue {
     query.from = from
     this.$router.push(
       this.localePath({
-        name: 'entity-id',
+        name: 'entity-slug',
         params: {
-          id: this.id,
+          slug: this.id,
         },
         query,
       }),
@@ -324,9 +312,9 @@ export default class PageCategory extends Vue {
 
     this.$router.push(
       this.localePath({
-        name: 'entity-id',
+        name: 'entity-slug',
         params: {
-          id: this.id,
+          slug: this.id,
         },
         query,
       }),

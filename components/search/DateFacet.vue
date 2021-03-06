@@ -4,7 +4,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header class="grey lighten-2"
           ><h3>
-            {{ label.startsWith('_') ? $t(label.slice(1)) : $t(label) }}
+            {{ label.startsWith('_') ? label.slice(1) : label }}
           </h3></v-expansion-panel-header
         >
         <v-expansion-panel-content>

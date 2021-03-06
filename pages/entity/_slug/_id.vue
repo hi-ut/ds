@@ -95,7 +95,8 @@ export default {
       return { item: payload }
     } else {
       // const id = app.context.params.id
-      const field = app.context.params.entity
+      const field = app.context.params.slug
+      console.log({ field })
 
       return { field, items: [] }
     }
@@ -124,7 +125,7 @@ export default {
     },
 
     id() {
-      return this.$route.params.id
+      return this.$route.params.slug
     },
 
     url() {
@@ -159,7 +160,7 @@ export default {
           disabled: false,
           to: this.localePath({
             name: 'entity-slug',
-            params: { slug: field === 'spatial' ? 'place' : field },
+            params: { slug: field },
           }),
           exact: true,
         },

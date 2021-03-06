@@ -515,7 +515,9 @@ export default {
         }
         const hit = map[uri]
 
-        const image = hit.image ? [hit.image.value] : [setting.mdi]
+        const image = hit.image
+          ? [hit.image.value]
+          : [process.env.settings[field].image]
 
         if (hit.description) {
           item._source.description = [

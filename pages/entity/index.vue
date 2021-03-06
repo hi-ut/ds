@@ -22,8 +22,8 @@
             <nuxt-link
               :to="
                 localePath({
-                  name: 'entity-id',
-                  params: { id: obj.id },
+                  name: 'entity-slug',
+                  params: { slug: obj.id },
                 })
               "
             >
@@ -39,8 +39,8 @@
               <nuxt-link
                 :to="
                   localePath({
-                    name: 'entity-id',
-                    params: { id: obj.id },
+                    name: 'entity-slug',
+                    params: { slug: obj.id },
                   })
                 "
               >

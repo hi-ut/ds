@@ -30,6 +30,44 @@ env.facetOptions = {
   },
 }
 
+env.settings = {
+  agential: {
+    type: 'type:Agent',
+    query: 'fc-agentials',
+    label: 'agential',
+    slug: 'entity/chname',
+    mdi: 'mdi-account',
+    image:
+      'https://raw.githubusercontent.com/hi-ut/static_images/main/account.png',
+  },
+  spatial: {
+    type: 'type:Place',
+    query: 'fc-places',
+    label: 'spatial',
+    mdi: 'mdi-map',
+    slug: 'entity/place',
+    image:
+      'https://raw.githubusercontent.com/hi-ut/static_images/main/map-marker.png',
+  },
+  about: {
+    type: 'type:Keyword',
+    query: 'fc-about',
+    label: 'about',
+    mdi: 'mdi-tag',
+    slug: 'term/keyword',
+    image: 'https://raw.githubusercontent.com/hi-ut/static_images/main/tag.png',
+  },
+  temporal: {
+    type: 'type:Time',
+    query: 'fc-temporal',
+    label: 'temporal',
+    mdi: 'mdi-calendar',
+    slug: 'entity/time',
+    image:
+      'https://raw.githubusercontent.com/hi-ut/static_images/main/calendar.png',
+  },
+}
+
 env.endpoint = 'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql'
 env.es = 'https://gimli-eu-west-1.searchly.com'
 env.password = '1ff162746e60feac7c91c12d37cf0ca6'
