@@ -697,9 +697,11 @@ export default {
           _source: source,
         }
 
-        if (obj.image) {
-          source._thumbnail = [obj.image.value]
-        }
+        source._thumbnail = obj.image
+          ? [obj.image.value]
+          : [
+              'https://raw.githubusercontent.com/hi-ut/static_images/main/no_image.svg',
+            ]
 
         relatedItems.push(item)
 
