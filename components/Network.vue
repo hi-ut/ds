@@ -74,12 +74,12 @@
 
         <!-- Other -->
 
-        <!-- v-if="nodesMap[otherId] && nodesMap[otherId].image" -->
+        <!-- v-if="otherNode && otherNode.image" -->
         <v-card v-if="otherId" flat outlined class="mb-5">
           <v-img
             :src="
-              nodesMap[otherId] && nodesMap[otherId].image
-                ? nodesMap[otherId].image
+              otherNode && otherNode.image
+                ? otherNode.image
                 : 'https://raw.githubusercontent.com/hi-ut/static_images/main/no_image.svg'
             "
             contain
@@ -93,12 +93,12 @@
               :to="
                 localePath({
                   name: 'entity-slug-id',
-                  params: { slug: entity, id: nodesMap[otherId].label },
+                  params: { slug: otherNode.entity, id: (otherNode.entity === 'temporal' ? otherNode.label.replace('年', '') : otherNode.label) },
                 })
               "
             >
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <h4>{{ nodesMap[otherId].label }}</h4>
+              <h4>{{ otherNode.label }}</h4>
             </nuxt-link>
 
             <!--
@@ -107,9 +107,9 @@
               </p>
               -->
 
-            <template v-if="nodesMap[otherId] && nodesMap[otherId].description">
+            <template v-if="otherNode && otherNode.description">
               <div class="mt-2">
-                {{ nodesMap[otherId].description }}
+                {{ otherNode.description }}
               </div>
             </template>
           </div>
@@ -145,8 +145,8 @@
               <v-spacer></v-spacer>
               <ResultOption
                 :item="{
-                  label: nodesMap[otherId].label,
-                  url: nodesMap[otherId].url,
+                  label: otherNode.label,
+                  url: otherNode.url,
                 }"
               />
             </v-card-actions>
@@ -332,6 +332,10 @@ export default class about extends Vue {
 
   get targetNode() {
     return this.nodesMap[this.u]
+  }
+
+  get otherNode(){
+    return this.nodesMap[this.otherId]
   }
 
   async search(u: any) {
@@ -578,6 +582,9 @@ export default class about extends Vue {
     if (nodes.length > 0) {
       const node = nodeMap[nodes[0]]
 
+      /*
+      console.log(node)
+
       let entity = 'entity/chname'
       if (node.p === 'http://schema.org/spatial') {
         entity = 'entity/place'
@@ -594,6 +601,9 @@ export default class about extends Vue {
       if (entity === 'entity/temporal') {
         uri = 'https://jpsearch.go.jp/entity/time/' + id
       }
+      */
+
+      const uri = node.id
 
       this.select(uri)
 

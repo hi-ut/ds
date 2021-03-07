@@ -324,4 +324,7 @@ tbody tr:nth-of-type(odd) {
 * {
   text-transform: none !important;
 }
+a {
+  text-decoration: none !important;
+}
 </style>
