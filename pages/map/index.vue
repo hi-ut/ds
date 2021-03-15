@@ -83,8 +83,7 @@ export default class PageMap extends Vue {
     ]
   }
 
-  endpoint: string =
-    'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql'
+  endpoint: any = process.env.endpoint
 
   async created() {
     const query = `

@@ -101,7 +101,7 @@ export default {
 
   data() {
     return {
-      endpoint: 'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql',
+      endpoint: process.env.endpoint,
       baseUrl: process.env.BASE_URL,
       github: 'https://w3id.org/hi', // process.env.github_pages,
       chartOptions: {

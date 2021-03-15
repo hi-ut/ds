@@ -337,7 +337,7 @@ export default {
     return {
       baseUrl: process.env.BASE_URL,
       prefix: 'https://w3id.org/hi',
-      endpoint: 'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql',
+      endpoint: process.env.endpoint,
       github: 'https://w3id.org/hi',
       userUids: [],
       entity: {

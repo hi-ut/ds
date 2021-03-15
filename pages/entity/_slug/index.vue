@@ -86,8 +86,7 @@ export default class PageCategory extends Vue {
     this.search()
   }
 
-  endpoint: string =
-    'https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql'
+  endpoint: any = process.env.endpoint
 
   settings: any = process.env.settings
 
