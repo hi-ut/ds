@@ -6,7 +6,7 @@ var Snorqldef = {
 	//overrides Snorql class variables
 	vars: {
 		//_endpoint: "/works/ld/jpsearch/ep",
-		_endpoint: "https://diyhistory.org/c.php/http://3.212.248.73:8890/sparql",
+		_endpoint: "https://diyhistory.org/c.php/http://ld.ldas.jp/sparql",
 		_poweredByLink: "https://www.hi.u-tokyo.ac.jp/publication/syoho/10/pub_kokiroku-minkeiki-01.html",
 		_poweredByLabel: "HI Knowledge DB",
 		default_query: "SELECT DISTINCT * WHERE {\n\t?s rdfs:label ?label . \n}\nORDER BY ?s\nLIMIT 100",
@@ -166,73 +166,6 @@ Snorqldef.prop_description = {
 
 //list of example queries. each object represents one example: {label: Japanese label for select option, label_en: English label for select option, ns: [prefixes to use in query], query: SPARQL query (escaped)}
 Snorqldef.example = [
-	
-	{
-		"label" : "天皇一覧",
-		"label_en" : "天皇一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?start ?end ?image WHERE {\n	?s a type:Emperor;\n                      jps:start ?start;\n                      jps:end ?end . \n  optional {?s schema:image ?image}\n}\nORDER BY ?end\nLIMIT 100"
-	},
-	{
-		"label" : "将軍一覧",
-		"label_en" : "将軍一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?start ?end ?image WHERE {\n	?s a type:Shogunate;\n                      jps:start ?start;\n                      jps:end ?end . \n  optional {?s schema:image ?image}\n}\nORDER BY ?end\nLIMIT 100"
-	},
-	{
-		"label" : "出来事一覧",
-		"label_en" : "出来事一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?start ?end ?description WHERE {\n	?s a type:Time;\n                      jps:start ?start;\n                      jps:end ?end;\n                      schema:description ?description . \n}\nORDER BY ?end\nLIMIT 100"
-	},
-	{
-		"label": "官位一覧",
-		"label_en" : "官位一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?label WHERE {\n	?s a type:Kani;\n                   rdfs:label ?label.\n}\nLIMIT 100"
-	},
-	{
-		"label": "人物一覧",
-		"label_en" : "人物一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?label ?image WHERE {\n	?s a type:Person;\n                   rdfs:label ?label.\n  optional {?s schema:image ?image }\n}\nORDER BY desc(?image)\nLIMIT 100"
-	},
-	{
-		"label": "藤原経光の経歴",
-		"label_en" : "藤原経光の経歴",
-		"ns" : [ ],
-		"query" : "SELECT ?start ?end ?description ?value ?type WHERE {\n   \n    <https://w3id.org/hi/api/test/chname/藤原経光> prop-ja:官位 ?o . \n    ?o schema:description ?description;\n       jps:start ?start . \n    optional { ?o jps:end ?end }\n    optional { ?o jps:relationType ?type }\n    optional { ?o jps:value ?value }\n   \n} order by ?start"
-	},
-	{
-		"label": "地名一覧",
-		"label_en" : "地名一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?label WHERE {\n	 ?s a type:Place;\n                    rdfs:label ?label .  \n}"
-	},
-	{
-		"label": "位階一覧",
-		"label_en" : "位階一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?label WHERE {\n	 ?s a type:位階;\n                    rdfs:label ?label;\n             schema:position ?position . \n} order by ?position"
-	},
-	{
-		"label": "太政官一覧",
-		"label_en" : "太政官一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s ?label ?ikai WHERE {\n	 ?s schema:isPartOf keyword:太政官;\n                    rdfs:label ?label;\n                    skos:closeMatch ?ikai .  \n  ?ikai schema:position ?position . \n} order by ?position"
-	},
-	{
-		"label": "官位相当表",
-		"label_en" : "官位相当表",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?s \nsample(?da2) as ?dazhokan\nsample(?ku2) as ?kuroudo\nsample(?sho2) as ?sho\n\nsample(?konoe2) as ?konoefu\nsample(?emon2) as ?emonfu\nsample(?hyo2) as ?hyoefu\n\nsample(?daz2) as ?dazaifu\nsample(?kuni2) as ?kokushi\nsample(?rei2) as ?reigai\nWHERE {\n	 ?s a type:位階;\n             schema:position ?position . \n  optional { ?da2 skos:closeMatch ?s; schema:isPartOf keyword:太政官 . }\n  optional { ?ku2 skos:closeMatch ?s; schema:isPartOf keyword:蔵人所 . }\n  optional { ?sho2 skos:closeMatch ?s; schema:isPartOf keyword:省 . }\n  optional { ?konoe2 skos:closeMatch ?s; schema:isPartOf keyword:近衛府 . }\n  optional { ?emon2 skos:closeMatch ?s; schema:isPartOf keyword:衛門府 . }\n  optional { ?hyo2 skos:closeMatch ?s; schema:isPartOf keyword:兵衛府 . }\n  optional { ?daz2 skos:closeMatch ?s; schema:isPartOf keyword:太宰府 . }\n  optional { ?kuni2 skos:closeMatch ?s; schema:isPartOf keyword:国司 . }\n  optional { ?rei2 skos:closeMatch ?s; schema:isPartOf keyword:令外官 . }\n} order by ?position"
-	},
-	{
-		"label": "官司一覧",
-		"label_en" : "官司一覧",
-		"ns" : [ ],
-		"query" : "SELECT DISTINCT ?kanshi ?sho  WHERE {\n  ?kanshi  schema:isPartOf ?sho; a type:官司 . \n	?sho a type:省 . \n}\nORDER BY ?sho"
-	},
 	{
 		"label": "1858年のアイテム",
 		"label_en" : "1858年のアイテム",
